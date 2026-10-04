@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "types": ["vite/client"],
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": ["src", "tests/*.ts"]
+  "include": ["src", "tests/*.ts", "assetgen/specs/*.json"]
 }

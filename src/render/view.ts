@@ -3,11 +3,16 @@ import * as THREE from 'three';
 import { Sim, Shot, GameEvent } from '../sim/sim';
 import { CFG } from '../sim/config';
 import { sectorPolygon } from '../sim/visibility';
-import { makeIsoCamera, resizeIsoCamera, CAM_OFFSET, AIM_PLANE_Y, zoom } from './iso';
+import { makeIsoCamera, resizeIsoCamera, makePerspCamera, resizePerspCamera, cameraOffset, AIM_PLANE_Y, zoom, PERSP_DEFAULT_FOV, focalLength35, perspDistance } from './iso';
 import { FX } from './fx';
 import { Lighting } from './lighting';
 import { Post } from './post';
 import { PlayerView, MonsterView } from './actors';
+import { buildVanguard } from '../assets/vanguard';
+import { buildReaver } from '../assets/reaver';
+import { buildEnvKit2 } from '../assets/envkit2';
+import { getAsset } from '../assets/gen/library';
+import type { PlayerVariant, MonsterVariant, EnvVariant, CameraMode } from '../settings';
 import { PLAYER_SPEC, PlayerSpec } from '../assets/player';
 import { MONSTER_SPEC, MonsterSpec } from '../assets/monster';
 import { deepMerge } from '../util';
@@ -17,7 +22,14 @@ import { buildObstacle, buildDecor, buildGround, buildBackdrop, LampAnchor } fro
 export class GameView {
   readonly renderer: THREE.WebGLRenderer;
   readonly scene = new THREE.Scene();
-  readonly camera: THREE.OrthographicCamera;
+  camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
+  readonly orthoCam: THREE.OrthographicCamera;
+  readonly perspCam: THREE.PerspectiveCamera;
+  cameraMode: CameraMode = 'ortho';
+  playerVariant: PlayerVariant = 'classic';
+  monsterVariant: MonsterVariant = 'classic';
+  envVariant: EnvVariant = 'classic';
+  private envGroup = new THREE.Group();
   readonly camTarget = new THREE.Vector3();
   debug = false;
   /** camera focus override (evidence/debug); null = follow player */
@@ -42,16 +54,17 @@ export class GameView {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.camera = makeIsoCamera(window.innerWidth / window.innerHeight);
+    this.orthoCam = makeIsoCamera(window.innerWidth / window.innerHeight);
+    this.perspCam = makePerspCamera(window.innerWidth / window.innerHeight, PERSP_DEFAULT_FOV);
+    this.camera = this.orthoCam;
     this.scene.background = new THREE.Color(0x101418);
 
     // simple test lighting
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.15;
-    this.scene.add(buildGround());
-    for (const ob of sim.obstacles) { const m = buildObstacle(ob, this.lamps); m.userData.obstacle = ob.id; this.scene.add(m); }
-    this.scene.add(buildDecor(sim.decor, sim.spawns, sim.obstacles));
-    this.scene.add(buildBackdrop(this.lamps));
+    this.envGroup.name = 'environment';
+    this.scene.add(this.envGroup);
+    this.buildEnvironment('classic');
 
     this.player = new PlayerView();
     this.scene.add(this.player.rig.root);
@@ -77,7 +90,79 @@ export class GameView {
     const w = window.innerWidth, h = window.innerHeight;
     this.renderer.setSize(w, h, false);
     this.post?.setSize(w, h);
-    resizeIsoCamera(this.camera, w / h);
+    resizeIsoCamera(this.orthoCam, w / h);
+    resizePerspCamera(this.perspCam, w / h);
+  }
+
+  // ------------------------------------------------------------- presentation variants (pause-menu settings)
+  /** Switch between the fixed orthographic iso camera and the weak-perspective (long lens, same fixed angles) camera. */
+  setCameraMode(mode: CameraMode, fov = this.perspCam.fov) {
+    this.cameraMode = mode;
+    resizePerspCamera(this.perspCam, this.perspCam.aspect, fov);
+    this.camera = mode === 'persp' ? this.perspCam : this.orthoCam;
+    this.post.setCamera(this.camera);
+    this.resize();
+    this.updateCamera(true);
+  }
+
+  cameraInfo() {
+    const c = this.camera, p = this.camTarget;
+    const persp = (c as THREE.PerspectiveCamera).isPerspectiveCamera;
+    const dir = c.getWorldDirection(new THREE.Vector3());
+    return {
+      mode: this.cameraMode, type: c.type,
+      fov: persp ? +this.perspCam.fov.toFixed(2) : 0,
+      focal35mm: persp ? +focalLength35(this.perspCam.fov).toFixed(1) : null,
+      distance: +c.position.distanceTo(p).toFixed(2),
+      yawDeg: +THREE.MathUtils.radToDeg(Math.atan2(-dir.x, -dir.z)).toFixed(2),
+      pitchDeg: +THREE.MathUtils.radToDeg(Math.asin(-dir.y)).toFixed(2),
+      expectedDistance: persp ? +perspDistance(this.perspCam.fov).toFixed(2) : null,
+    };
+  }
+
+  /** Swap the player visual (gameplay untouched). Asset must be loaded for 'vanguard'. */
+  setPlayerVariant(v: PlayerVariant) {
+    if (v === 'vanguard' && !getAsset('vanguard')) throw new Error('vanguard asset not loaded');
+    this.playerVariant = v;
+    this.scene.remove(this.player.rig.root);
+    this.player = new PlayerView(this.playerSpec, v === 'vanguard' ? buildVanguard(getAsset('vanguard')!) : undefined);
+    this.scene.add(this.player.rig.root);
+  }
+
+  setMonsterVariant(v: MonsterVariant) {
+    if (v === 'reaver' && !getAsset('reaver')) throw new Error('reaver asset not loaded');
+    this.monsterVariant = v;
+    for (const [, mv] of this.monsters) { this.scene.remove(mv.rig.root); mv.dispose(); }
+    this.monsters.clear();
+  }
+
+  private makeMonsterView(id: string) {
+    return this.monsterVariant === 'reaver' ? new MonsterView(id, this.monsterSpec, buildReaver(getAsset('reaver')!)) : new MonsterView(id, this.monsterSpec);
+  }
+
+  /** Rebuild every environment visual (obstacle dressing, decor, ground, backdrop) and the practical lights. */
+  setEnvVariant(v: EnvVariant) {
+    if (v === 'kit2' && !getAsset('envkit')) throw new Error('envkit asset not loaded');
+    this.buildEnvironment(v);
+    this.lighting?.setLamps(this.lamps);
+  }
+
+  private buildEnvironment(v: EnvVariant) {
+    const sim = this.sim;
+    this.envVariant = v;
+    for (const c of [...this.envGroup.children]) {
+      this.envGroup.remove(c);
+      c.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && !m.userData.sharedGeo) m.geometry.dispose(); });
+    }
+    this.lamps.length = 0;
+    if (v === 'kit2') {
+      this.envGroup.add(buildEnvKit2(getAsset('envkit')!, sim.obstacles, sim.decor, sim.spawns, this.lamps));
+      return;
+    }
+    this.envGroup.add(buildGround());
+    for (const ob of sim.obstacles) { const m = buildObstacle(ob, this.lamps); m.userData.obstacle = ob.id; this.envGroup.add(m); }
+    this.envGroup.add(buildDecor(sim.decor, sim.spawns, sim.obstacles));
+    this.envGroup.add(buildBackdrop(this.lamps));
   }
 
   // ------------------------------------------------------------- coordinate helpers
@@ -86,7 +171,7 @@ export class GameView {
     const k = snap || this.focus ? 1 : 0.15;
     this.camTarget.x += (p.x - this.camTarget.x) * k;
     this.camTarget.z += (p.z - this.camTarget.z) * k;
-    this.camera.position.copy(this.camTarget).add(CAM_OFFSET);
+    this.camera.position.copy(this.camTarget).add(cameraOffset(this.camera));
     this.camera.lookAt(this.camTarget);
     this.camera.updateMatrixWorld();
   }
@@ -117,7 +202,7 @@ export class GameView {
     for (const m of sim.monsters) {
       seen.add(m.id);
       let v = this.monsters.get(m.id);
-      if (!v) { v = new MonsterView(m.id, this.monsterSpec); this.monsters.set(m.id, v); this.scene.add(v.rig.root); }
+      if (!v) { v = this.makeMonsterView(m.id); this.monsters.set(m.id, v); this.scene.add(v.rig.root); }
       v.update(m, sim, this.camera, dt);
     }
     for (const [id, v] of this.monsters) if (!seen.has(id)) { this.scene.remove(v.rig.root); v.dispose(); this.monsters.delete(id); }
@@ -164,7 +249,7 @@ export class GameView {
     if (kind === 'player') {
       this.playerSpec = deepMerge(PLAYER_SPEC, override);
       this.scene.remove(this.player.rig.root);
-      this.player = new PlayerView(this.playerSpec);
+      this.player = new PlayerView(this.playerSpec, this.playerVariant === 'vanguard' ? buildVanguard(getAsset('vanguard')!) : undefined);
       this.scene.add(this.player.rig.root);
     } else {
       this.monsterSpec = deepMerge(MONSTER_SPEC, override);
@@ -178,8 +263,8 @@ export class GameView {
 
   sceneInfo() {
     let meshes = 0, tris = 0;
-    this.scene.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && m.visible) { meshes++; const g = m.geometry; tris += (g.index ? g.index.count : g.attributes.position.count) / 3; } });
-    return { meshes, tris: Math.round(tris), drawCalls: this.renderer.info.render.calls, fx: { ...this.fx.stats, active: this.fx.activeCount() } };
+    this.scene.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && m.visible) { meshes++; const g = m.geometry; tris += ((g.index ? g.index.count : g.attributes.position.count) / 3) * ((m as THREE.InstancedMesh).isInstancedMesh ? (m as THREE.InstancedMesh).count : 1); } });
+    return { env: this.envVariant, lamps: this.lamps.length, meshes, tris: Math.round(tris), drawCalls: this.renderer.info.render.calls, fx: { ...this.fx.stats, active: this.fx.activeCount() } };
   }
 
   /**

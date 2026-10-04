@@ -27,3 +27,6 @@ desktop.ini
 # Env / local
 .env
 .env.*
+
+# Ad-hoc pipeline variants (tests/pipeline-change.mjs)
+public/assets/gen/variants/

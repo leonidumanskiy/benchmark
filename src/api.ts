@@ -11,14 +11,20 @@ import { buildPlayer, PLAYER_SPEC } from './assets/player';
 import { buildMonster, MONSTER_SPEC } from './assets/monster';
 
 import { deepMerge } from './util';
+import { buildVanguard, VANGUARD_SPEC } from './assets/vanguard';
+import { buildReaver, REAVER_SPEC } from './assets/reaver';
+import { getAsset, loadLog } from './assets/gen/library';
+import type { Settings } from './settings';
+import type { PauseMenu } from './ui/menu';
 import * as THREE from 'three';
 
-export const BUILD_STAGE = '06-audio';
+export const BUILD_STAGE = '07-assets';
 
 interface Ctx {
   sim: Sim; view: GameView; input: InputController; hud: Hud; sound: SoundSystem;
   loop: { paused: boolean; fps: number; timeScale: number };
   errors: string[]; stepSim: (n: number) => void; renderFrame: (dt: number) => void; CFG: unknown;
+  settings: { get: () => Settings; apply: (p: Partial<Settings>) => Promise<Settings>; menu: PauseMenu };
 }
 
 export function installApi(c: Ctx) {
@@ -27,7 +33,17 @@ export function installApi(c: Ctx) {
     stage: BUILD_STAGE,
     sim, view, input, loop, cfg: c.CFG,
     /** compact state snapshot */
-    state: () => ({ stage: BUILD_STAGE, paused: loop.paused, fps: loop.fps, debug: view.debug, ...sim.snapshot(), errors: c.errors.length }),
+    state: () => ({ stage: BUILD_STAGE, paused: loop.paused, fps: loop.fps, debug: view.debug, settings: c.settings.get(), menuOpen: c.settings.menu.open, ...sim.snapshot(), errors: c.errors.length }),
+    /** presentation settings (same path as the pause menu): player/monster/env variants, camera mode + fov */
+    settings: {
+      get: () => c.settings.get(),
+      set: (p: Partial<Settings>) => c.settings.apply(p),
+      menu: (open?: boolean) => { c.settings.menu.toggle(open); return c.settings.menu.open; },
+      /** what the view actually shows (may lag `get()` while assets load) */
+      active: () => ({ player: view.playerVariant, monster: view.monsterVariant, env: view.envVariant, camera: view.cameraMode }),
+    },
+    camera: () => view.cameraInfo(),
+    assets: () => ({ log: loadLog.slice(), loaded: (['vanguard', 'reaver', 'envkit'] as const).map((id) => { const a = getAsset(id); return { id, loaded: !!a, tris: a?.tris ?? 0, nodes: a ? a.nodes.size : 0 }; }) }),
     errors: () => c.errors.slice(),
     events: () => sim.log.slice(),
     /** pause the real-time loop; then use step(n) for deterministic stepping */
@@ -88,12 +104,15 @@ export function installApi(c: Ctx) {
       hash: () => sim.hash(),
       /** 8-angle contact sheet (PNG data URL) of the player or monster built from the shared spec (+ optional overrides). */
       turntable: (kind: 'player' | 'monster', override?: unknown, opts: Record<string, unknown> = {}) => {
-        const rig = kind === 'player' ? buildPlayer(deepMerge(PLAYER_SPEC, override)) : buildMonster(deepMerge(MONSTER_SPEC, override));
+        const variant = opts.variant as string | undefined;
+        const rig = kind === 'player'
+          ? (variant === 'vanguard' ? buildVanguard(getAsset('vanguard')!, override ? deepMerge(VANGUARD_SPEC, override) : undefined) : buildPlayer(deepMerge(PLAYER_SPEC, override)))
+          : (variant === 'reaver' ? buildReaver(getAsset('reaver')!, override ? deepMerge(REAVER_SPEC, override) : undefined) : buildMonster(deepMerge(MONSTER_SPEC, override)));
         const url = renderTurntable(view.renderer, rig.root, { closeHalf: kind === 'player' ? 1.15 : 1.6, center: kind === 'player' ? 0.95 : 0.8, ...opts });
         c.renderFrame(0);
         return url;
       },
-      specs: () => ({ player: PLAYER_SPEC, monster: MONSTER_SPEC }),
+      specs: () => ({ player: PLAYER_SPEC, monster: MONSTER_SPEC, vanguard: VANGUARD_SPEC, reaver: REAVER_SPEC }),
       /** camera zoom for close inspection (ortho half-height in metres); no arg = default */
       zoom: (half = VIEW_HALF_HEIGHT) => { zoom.half = half; view.resize(); view.updateCamera(true); c.renderFrame(0); return half; },
       /** rebuild player/monster visuals from the shared spec with overrides (runtime model/equipment change) */

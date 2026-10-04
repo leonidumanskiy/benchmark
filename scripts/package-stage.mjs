@@ -31,7 +31,7 @@ fs.writeFileSync(path.join(stageDir, 'run.bat'), '@echo off\r\ncd /d "%~dp0"\r\n
 fs.writeFileSync(path.join(stageDir, 'run.sh'), '#!/bin/sh\ncd "$(dirname "$0")"\nnode serve.mjs web 8080\n');
 const runMd = fs.readFileSync(path.join(root, 'stages/RUN.template.md'), 'utf8').replaceAll('{{NAME}}', name).replaceAll('{{STAGE}}', String(stage));
 fs.writeFileSync(path.join(stageDir, 'RUN.md'), runMd);
-const srcEntries = ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', '.gitignore', 'src', 'scripts', 'tests', 'stages'].filter((e) => fs.existsSync(path.join(root, e)));
+const srcEntries = ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', '.gitignore', 'src', 'scripts', 'tests', 'stages', 'assetgen', 'public'].filter((e) => fs.existsSync(path.join(root, e)));
 zipDir(root, path.join(stageDir, 'source.zip'), srcEntries);
 const evSrc = path.join(root, 'evidence', name);
 if (!fs.existsSync(evSrc)) { console.error('missing evidence dir ' + evSrc); process.exit(3); }

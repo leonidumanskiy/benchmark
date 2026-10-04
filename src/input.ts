@@ -18,7 +18,7 @@ export class InputController {
       const k = e.code || e.key;
       if (k === 'KeyR') this.onAction('reset');
       else if (k === 'F3' || k === 'Backquote') { this.onAction('debug'); e.preventDefault(); }
-      else if (k === 'KeyP') this.onAction('pause');
+      else if (k === 'KeyP' || k === 'Escape') { this.onAction('pause'); e.preventDefault(); }
       else if (k === 'KeyM') this.onAction('mute');
       this.keys.add(k);
     });

@@ -5,7 +5,7 @@ import path from 'node:path';
 
 const ev = (page, fn, arg) => page.evaluate(fn, arg);
 
-async function sheetInit(page) {
+export async function sheetInit(page) {
   await ev(page, () => {
     const c = document.createElement('canvas'); c.width = 6 * 230; c.height = 4 * 250;
     const g = c.getContext('2d'); g.fillStyle = '#0c0f12'; g.fillRect(0, 0, c.width, c.height);
@@ -29,13 +29,13 @@ async function grab(page, label, who = 'player') {
     return true;
   }, [label, who]);
 }
-async function sheetSave(page, file) {
+export async function sheetSave(page, file) {
   const url = await ev(page, () => window.__sheet.c.toDataURL('image/png'));
   fs.writeFileSync(file, Buffer.from(url.split(',')[1], 'base64'));
 }
 const anim = (page) => ev(page, () => __game.anim());
 
-async function playerSequence(page, log, tag, frames) {
+export async function playerSequence(page, log, tag, frames) {
   const { check } = log;
   await ev(page, () => __game.debug.zoom(3.4));
   const seq = [];
@@ -75,7 +75,7 @@ async function playerSequence(page, log, tag, frames) {
   check(`player walks in 8 directions relative to aim, hands stay on the gun${tag}`, dirs.size === 8 && maxGrip < 0.03, { dirs: [...dirs], maxGripError: maxGrip });
 }
 
-async function monsterSequence(page, log, tag, frames) {
+export async function monsterSequence(page, log, tag, frames) {
   const { check } = log;
   await ev(page, () => __game.debug.zoom(4.4));
   const seq = [];

@@ -1,0 +1,16 @@
+{
+ "change": "equipment.backpack comms->reactor, helmetCrest off (spec override -> Blender regen)",
+ "generatorSeconds": 2.36,
+ "changedPixelsPerAngle": [
+  849,
+  1517,
+  2220,
+  2271,
+  2291,
+  1842,
+  1493,
+  691
+ ],
+ "visibleFromAngles": 8,
+ "manualEdits": 0
+}

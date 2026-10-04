@@ -5,6 +5,9 @@ import { InputController } from './input';
 import { Hud } from './ui/hud';
 import { installApi } from './api';
 import { SoundSystem } from './audio/sound';
+import { Settings, loadSettings, saveSettings, sanitize } from './settings';
+import { loadAsset, GenAssetId } from './assets/gen/library';
+import { PauseMenu } from './ui/menu';
 
 // ---- error capture first, so boot failures are visible to tooling
 export const errors: string[] = [];
@@ -23,6 +26,26 @@ const input = new InputController(canvas);
 const hud = new Hud();
 const sound = new SoundSystem(sim);
 if (params.get('mute') === '1') sound.setMuted(true);
+
+// ---- presentation settings (pause menu / URL / localStorage). Assets for selected variants load before first frame.
+export let settings: Settings = loadSettings(params);
+let menuRef: PauseMenu | null = null;
+const needed = (s: Settings) => [s.player === 'vanguard' && 'vanguard', s.monster === 'reaver' && 'reaver', s.env === 'kit2' && 'envkit'].filter(Boolean) as GenAssetId[];
+export async function applySettings(patch: Partial<Settings>) {
+  const next = sanitize({ ...settings, ...patch });
+  await Promise.all(needed(next).map(loadAsset));
+  settings = next;
+  // compare against what the view actually shows, so a failed earlier apply is retried
+  if (view.playerVariant !== next.player) view.setPlayerVariant(next.player);
+  if (view.monsterVariant !== next.monster) view.setMonsterVariant(next.monster);
+  if (view.envVariant !== next.env) view.setEnvVariant(next.env);
+  if (view.cameraMode !== next.camera || view.perspCam.fov !== next.fov) view.setCameraMode(next.camera, next.fov);
+  saveSettings(next);
+  menuRef?.refresh();
+  renderFrame(0);
+  return next;
+}
+try { await Promise.all(needed(settings).map(loadAsset)); } catch (e) { errors.push('asset preload: ' + String(e)); settings = sanitize({ camera: settings.camera, fov: settings.fov }); }
 
 export const loop = { paused: params.get('paused') === '1', acc: 0, last: performance.now(), frames: 0, fps: 0, fpsT: 0, timeScale: 1 };
 const pending: GameEvent[] = [];
@@ -43,12 +66,15 @@ export function renderFrame(dt: number) {
 input.onAction = (a) => {
   if (a === 'reset') { sim.reset({ seed: sim.seed, waves: sim.phase !== 'sandbox' }); view.onReset(); view.updateCamera(true); hud.reset(); sound.reset(); }
   if (a === 'debug') { view.debug = !view.debug; }
-  if (a === 'pause') loop.paused = !loop.paused;
+  if (a === 'pause') menu.toggle();
   if (a === 'mute') sound.toggleMute();
 };
 
+const menu = menuRef = new PauseMenu(() => settings, async (p) => { await applySettings(p); }, (open) => { loop.paused = open; input.keys.clear(); input.fireHeld = false; });
+
 window.addEventListener('resize', () => view.resize());
 view.updateCamera(true);
+await applySettings({}).catch((e) => errors.push('settings: ' + String(e)));
 
 function frame() {
   // performance.now() rather than the rAF timestamp: the latter can lag/stall in some (headless) compositors
@@ -72,4 +98,4 @@ function frame() {
 }
 requestAnimationFrame(frame);
 
-installApi({ sim, view, input, loop, errors, stepSim, renderFrame, hud, sound, CFG });
+installApi({ sim, view, input, loop, errors, stepSim, renderFrame, hud, sound, CFG, settings: { get: () => settings, apply: applySettings, menu } });

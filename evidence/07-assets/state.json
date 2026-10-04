@@ -1,0 +1,596 @@
+{
+ "state": {
+  "stage": "07-assets",
+  "paused": true,
+  "fps": 53,
+  "debug": false,
+  "settings": {
+   "player": "vanguard",
+   "monster": "reaver",
+   "env": "kit2",
+   "camera": "ortho",
+   "fov": 12
+  },
+  "menuOpen": false,
+  "tick": 2,
+  "time": 0.033,
+  "seed": 1,
+  "phase": "sandbox",
+  "wave": 0,
+  "waves": 3,
+  "toSpawn": 0,
+  "player": {
+   "x": 0,
+   "z": 2,
+   "vx": 0,
+   "vz": 0,
+   "hp": 100,
+   "alive": true,
+   "aimDeg": -140.046,
+   "aimX": -8.716,
+   "aimZ": -5.302,
+   "shots": 0
+  },
+  "monsters": [],
+  "lastShot": null,
+  "stats": {
+   "kills": 0,
+   "shots": 0,
+   "hits": 0,
+   "damageTaken": 0,
+   "attacks": 0
+  },
+  "errors": 0
+ },
+ "camera": {
+  "mode": "ortho",
+  "type": "OrthographicCamera",
+  "fov": 0,
+  "focal35mm": null,
+  "distance": 60,
+  "yawDeg": 45,
+  "pitchDeg": 41.47,
+  "expectedDistance": null
+ },
+ "assets": {
+  "log": [
+   {
+    "id": "reaver",
+    "ms": 181,
+    "bytes": 1941340,
+    "ok": true
+   },
+   {
+    "id": "vanguard",
+    "ms": 193,
+    "bytes": 2490508,
+    "ok": true
+   },
+   {
+    "id": "envkit",
+    "ms": 203,
+    "bytes": 4025812,
+    "ok": true
+   }
+  ],
+  "loaded": [
+   {
+    "id": "vanguard",
+    "loaded": true,
+    "tris": 65564,
+    "nodes": 18
+   },
+   {
+    "id": "reaver",
+    "loaded": true,
+    "tris": 52354,
+    "nodes": 19
+   },
+   {
+    "id": "envkit",
+    "loaded": true,
+    "tris": 95912,
+    "nodes": 42
+   }
+  ]
+ },
+ "scene": {
+  "obstacles": [
+   {
+    "id": "wall_n_w",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": -9.5,
+     "cz": -16.4,
+     "hw": 7.300000000000001,
+     "hd": 0.4
+    },
+    "h": 2.6
+   },
+   {
+    "id": "wall_n_e",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": 9.5,
+     "cz": -16.4,
+     "hw": 7.300000000000001,
+     "hd": 0.4
+    },
+    "h": 2.4
+   },
+   {
+    "id": "wall_s_w",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": -9.5,
+     "cz": 16.4,
+     "hw": 7.300000000000001,
+     "hd": 0.4
+    },
+    "h": 2.5
+   },
+   {
+    "id": "wall_s_e",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": 9.5,
+     "cz": 16.4,
+     "hw": 7.300000000000001,
+     "hd": 0.4
+    },
+    "h": 2.7
+   },
+   {
+    "id": "wall_w_n",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": -16.4,
+     "cz": -9.5,
+     "hw": 0.4,
+     "hd": 7.300000000000001
+    },
+    "h": 2.5
+   },
+   {
+    "id": "wall_w_s",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": -16.4,
+     "cz": 9.5,
+     "hw": 0.4,
+     "hd": 7.300000000000001
+    },
+    "h": 2.6
+   },
+   {
+    "id": "wall_e_n",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": 16.4,
+     "cz": -9.5,
+     "hw": 0.4,
+     "hd": 7.300000000000001
+    },
+    "h": 2.4
+   },
+   {
+    "id": "wall_e_s",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": 16.4,
+     "cz": 9.5,
+     "hw": 0.4,
+     "hd": 7.300000000000001
+    },
+    "h": 2.6
+   },
+   {
+    "id": "lair_n",
+    "kind": "lair",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 0,
+     "cz": -19.2,
+     "hw": 2.8,
+     "hd": 0.5
+    },
+    "h": 1.4
+   },
+   {
+    "id": "lair_s",
+    "kind": "lair",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 0,
+     "cz": 19.2,
+     "hw": 2.8,
+     "hd": 0.5
+    },
+    "h": 1.4
+   },
+   {
+    "id": "lair_w",
+    "kind": "lair",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": -19.2,
+     "cz": 0,
+     "hw": 0.5,
+     "hd": 2.8
+    },
+    "h": 1.4
+   },
+   {
+    "id": "lair_e",
+    "kind": "lair",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 19.2,
+     "cz": 0,
+     "hw": 0.5,
+     "hd": 2.8
+    },
+    "h": 1.4
+   },
+   {
+    "id": "cover_a",
+    "kind": "cover",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": -6,
+     "cz": -5,
+     "hw": 1.7,
+     "hd": 0.45
+    },
+    "h": 1.15
+   },
+   {
+    "id": "cover_b",
+    "kind": "cover",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 6.5,
+     "cz": -6,
+     "hw": 0.45,
+     "hd": 1.7
+    },
+    "h": 1.15
+   },
+   {
+    "id": "cover_c",
+    "kind": "cover",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": -7,
+     "cz": 6,
+     "hw": 0.45,
+     "hd": 1.8
+    },
+    "h": 1.15
+   },
+   {
+    "id": "cover_d",
+    "kind": "cover",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 7,
+     "cz": 6.5,
+     "hw": 1.7,
+     "hd": 0.45
+    },
+    "h": 1.15
+   },
+   {
+    "id": "cover_e",
+    "kind": "cover",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 0,
+     "cz": -10.5,
+     "hw": 2.4,
+     "hd": 0.45
+    },
+    "h": 1.15
+   },
+   {
+    "id": "cover_f",
+    "kind": "cover",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": -1,
+     "cz": 11,
+     "hw": 2.2,
+     "hd": 0.45
+    },
+    "h": 1.15
+   },
+   {
+    "id": "ruin_1a",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": -11.5,
+     "cz": -10,
+     "hw": 2.2,
+     "hd": 0.4
+    },
+    "h": 2.2
+   },
+   {
+    "id": "ruin_1b",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": -13.3,
+     "cz": -8,
+     "hw": 0.4,
+     "hd": 1.6
+    },
+    "h": 1.6
+   },
+   {
+    "id": "ruin_2",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": 11,
+     "cz": 10.5,
+     "hw": 0.4,
+     "hd": 2.3
+    },
+    "h": 2
+   },
+   {
+    "id": "ruin_3",
+    "kind": "wall",
+    "material": "stone",
+    "shape": {
+     "kind": "box",
+     "cx": 12,
+     "cz": -9,
+     "hw": 1.8,
+     "hd": 0.4
+    },
+    "h": 1.8
+   },
+   {
+    "id": "rock_1",
+    "kind": "rock",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": -11,
+     "cz": 1,
+     "r": 1.3
+    },
+    "h": 1.6
+   },
+   {
+    "id": "rock_2",
+    "kind": "rock",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": 11.5,
+     "cz": 1.5,
+     "r": 1.15
+    },
+    "h": 1.4
+   },
+   {
+    "id": "rock_3",
+    "kind": "rock",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": 4.5,
+     "cz": 12.5,
+     "r": 1
+    },
+    "h": 1.2
+   },
+   {
+    "id": "rock_4",
+    "kind": "rock",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": -12,
+     "cz": 12,
+     "r": 1.4
+    },
+    "h": 1.7
+   },
+   {
+    "id": "rock_5",
+    "kind": "rock",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": -4.5,
+     "cz": -13.2,
+     "r": 0.9
+    },
+    "h": 1.1
+   },
+   {
+    "id": "rock_6",
+    "kind": "rock",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": 13.2,
+     "cz": -13.2,
+     "r": 1
+    },
+    "h": 1.3
+   },
+   {
+    "id": "crate_1",
+    "kind": "crate",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 3.2,
+     "cz": -2.8,
+     "hw": 0.55,
+     "hd": 0.55
+    },
+    "h": 1
+   },
+   {
+    "id": "crate_2",
+    "kind": "crate",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": -3.8,
+     "cz": 3.2,
+     "hw": 0.5,
+     "hd": 0.5
+    },
+    "h": 0.95
+   },
+   {
+    "id": "crate_3",
+    "kind": "crate",
+    "material": "metal",
+    "shape": {
+     "kind": "box",
+     "cx": 9.5,
+     "cz": -12.5,
+     "hw": 0.6,
+     "hd": 0.6
+    },
+    "h": 1.1
+   },
+   {
+    "id": "pillar_1",
+    "kind": "pillar",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": -10,
+     "cz": 4.6,
+     "r": 0.55
+    },
+    "h": 3.2
+   },
+   {
+    "id": "pillar_2",
+    "kind": "pillar",
+    "material": "stone",
+    "shape": {
+     "kind": "circle",
+     "cx": 10,
+     "cz": -4,
+     "r": 0.55
+    },
+    "h": 2.4
+   }
+  ],
+  "spawns": [
+   {
+    "id": "sp_n1",
+    "x": -2.6,
+    "z": -21.2,
+    "lair": "lair_n"
+   },
+   {
+    "id": "sp_n2",
+    "x": 2.6,
+    "z": -21.2,
+    "lair": "lair_n"
+   },
+   {
+    "id": "sp_e1",
+    "x": 21.2,
+    "z": -2.6,
+    "lair": "lair_e"
+   },
+   {
+    "id": "sp_e2",
+    "x": 21.2,
+    "z": 2.6,
+    "lair": "lair_e"
+   },
+   {
+    "id": "sp_s1",
+    "x": 2.6,
+    "z": 21.2,
+    "lair": "lair_s"
+   },
+   {
+    "id": "sp_s2",
+    "x": -2.6,
+    "z": 21.2,
+    "lair": "lair_s"
+   },
+   {
+    "id": "sp_w1",
+    "x": -21.2,
+    "z": 2.6,
+    "lair": "lair_w"
+   },
+   {
+    "id": "sp_w2",
+    "x": -21.2,
+    "z": -2.6,
+    "lair": "lair_w"
+   }
+  ],
+  "decor": 200,
+  "env": "kit2",
+  "lamps": 145,
+  "meshes": 262,
+  "tris": 1488294,
+  "drawCalls": 1,
+  "fx": {
+   "sparks": 0,
+   "glow": 0,
+   "smoke": 0,
+   "debris": 0,
+   "timed": 0,
+   "lights": 0,
+   "spawned": {
+    "shot": 92,
+    "impact_flesh": 88,
+    "kill": 25,
+    "player_hit": 3,
+    "impact_stone": 4
+   },
+   "lastImpactTick": 166,
+   "lastImpactShot": 3,
+   "active": 0
+  }
+ }
+}

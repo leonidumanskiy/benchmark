@@ -27,7 +27,7 @@ export class PlayerView {
   anim = { state: 'idle', dir: '', walk: 0, aim: 1, recoil: 0, gripError: 0 };
   private lastShot = -999;
 
-  constructor(spec: PlayerSpec = PLAYER_SPEC) { this.rig = buildPlayer(spec); this.rig.root.add(this.shadow); }
+  constructor(spec: PlayerSpec = PLAYER_SPEC, rig?: PlayerRig) { this.rig = rig ?? buildPlayer(spec); this.rig.root.add(this.shadow); }
 
   update(sim: Sim, dt: number) {
     const P = sim.player, R = this.rig, j = R.j;
@@ -122,8 +122,8 @@ export class MonsterView {
   anim = { state: 'idle', stepping: 0, hit: 0 };
   private glowBase: number[];
 
-  constructor(public id: string, spec: MonsterSpec = MONSTER_SPEC) {
-    this.rig = buildMonster(spec);
+  constructor(public id: string, spec: MonsterSpec = MONSTER_SPEC, rig?: MonsterRig) {
+    this.rig = rig ?? buildMonster(spec);
     this.rig.root.userData.monster = id;
     this.rig.root.add(this.shadow);
     this.shadow.userData.ui = true;
@@ -271,7 +271,7 @@ export class MonsterView {
   }
 
   dispose() {
-    this.rig.root.traverse((o) => { const me = o as THREE.Mesh; if (me.isMesh) { me.geometry.dispose(); } });
+    this.rig.root.traverse((o) => { const me = o as THREE.Mesh; if (me.isMesh && !me.userData.sharedGeo) { me.geometry.dispose(); } });
     Object.values(this.rig.mats).forEach((m) => m.dispose());
   }
 }

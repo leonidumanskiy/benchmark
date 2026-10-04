@@ -1,0 +1,25 @@
+{
+  "id": "reaver",
+  "label": "Reaver (new)",
+  "scale": 0.9,
+  "skeleton": {
+    "bodyY": 1.0, "bodyPitch": -0.16,
+    "abdomen": [0, 0.02, -0.38], "abdomenPitch": 0.35,
+    "neck": [0, 0.02, 0.5], "head": [0, -0.02, 0.24], "headPitch": 0.22, "headScale": 1.3,
+    "jaw": [0.1, -0.11, 0.26],
+    "tail": [0, 0.0, -0.55],
+    "legs": [
+      { "name": "midL", "side": 1, "hip": [0.27, -0.05, 0.12], "foot": [1.05, 0, 0.6], "a": 0.78, "b": 1.04 },
+      { "name": "midR", "side": -1, "hip": [-0.27, -0.05, 0.12], "foot": [-1.05, 0, 0.6], "a": 0.78, "b": 1.04 },
+      { "name": "rearL", "side": 1, "hip": [0.25, -0.05, -0.22], "foot": [1.0, 0, -0.85], "a": 0.8, "b": 1.06 },
+      { "name": "rearR", "side": -1, "hip": [-0.25, -0.05, -0.22], "foot": [-1.0, 0, -0.85], "a": 0.8, "b": 1.06 }
+    ],
+    "arms": { "hip": [0.23, 0.08, 0.42], "a": 0.52, "b": 0.78, "rest": [0.44, 0.55, 1.45], "pole": [0.7, 2.6, 0.4] }
+  },
+  "palette": {
+    "shell": "#7f8791", "shellDark": "#2b2f36", "flesh": "#2c0609", "glow": "#ff2418", "spike": "#8e0c12", "eye": "#ff5a1a", "teeth": "#d9d0bf"
+  },
+  "dorsalSpikes": 4,
+  "legSpikes": true,
+  "bake": { "aoDist": 0.3, "rays": 24 }
+}

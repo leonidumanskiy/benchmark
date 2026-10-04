@@ -1,0 +1,94 @@
+PASS  boot: game API present, stage tag  {"stage":"07-assets","gl":"ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)"}
+PASS  move KeyW goes screen up [run1]  {"screenDx":0,"screenDy":-42,"world":2.7}
+PASS  move KeyS goes screen down [run1]  {"screenDx":0,"screenDy":49,"world":2.7}
+PASS  move KeyA goes screen left [run1]  {"screenDx":-75,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [run1]  {"screenDx":75,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [run1]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [run1]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [run1]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0,"vis":true,"fxImpactShot":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":2},{"k":2,"hit":"m3","hp":980,"endErr":0.0001,"vis":true,"fxImpactShot":3},{"k":3,"hit":"m4","hp":980,"endErr":0.0003,"vis":true,"fxImpactShot":4},{"k":4,"hit":"m5","hp":980,"endErr":0.0002,"vis":true,"fxImpactShot":5},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":6},{"k":6,"hit":"m7","hp":980,"endErr":0.0004,"vis":true,"fxImpactShot":7},{"k":7,"hit":"m8","hp":980,"endErr":0.0003,"vis":true,"fxImpactShot":8}]}
+PASS  hidden behind cover, occluder reported [run1]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [run1]
+PASS  hidden outside sector [run1]
+PASS  near circle sees behind the player [run1]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [run1]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [run1]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":124,"solo":131,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":147,"solo":147,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [run1]  {"dx":-1.53,"dz":1.53,"hp":920,"shots":4}
+PASS  waves 1→2→3 complete in order, victory [run1]  {"phase":"victory","wave":3,"kills":18,"hp":76,"phases":["pre:0@0","wave:1@121","intermission:1@786","wave:2@967","intermission:2@1687","wave:3@1868","victory:3@2633"],"spawnHidden":18,"entered":18,"pathed":18,"attackers":2,"dmg":24}
+PASS  monsters spawn hidden behind cover and enter arena [run1]  {"spawnHidden":18,"entered":18}
+PASS  monsters path around obstacles and attack [run1]  {"pathed":18,"attackers":2,"dmg":24}
+PASS  debug overlays disabled in normal play (F3 toggles them on/off)  {"normal":{"overlay":false,"labels":0,"panel":"none","flag":false},"on":{"overlay":true,"labels":104,"panel":"block"},"off":{"overlay":false,"labels":0,"panel":"none"}}
+PASS  drone flies continuously in real time along a patrol covering the arena  {"pts":[{"x":13.38,"y":4.49,"z":8.57,"t":17.97},{"x":13.64,"y":4.42,"z":9.59,"t":18.37},{"x":13.82,"y":4.37,"z":10.63,"t":18.78},{"x":13.82,"y":4.35,"z":11.67,"t":19.18}],"maxAbs":14.895145903836461,"uniq":55}
+PASS  drone light pass changes the image noticeably (lit pool + moving shadows) while gameplay state is unchanged  {"d01":{"frac":0.05741319444444445,"mean":0.016771137160839215},"lumA_atA":0.35261318021448407,"lumA_atB":0.03149910615040706,"hashSame":true,"hDrone":"276fc147","hRef":"276fc147"}
+PASS  lit-but-hidden monster stays hidden (no pixels, no shadow leak); revealing is gameplay-driven only  {"hidden":{"visible":false,"reason":"out_of_sector","rendered":false,"pixels":0,"changedPixelsVsEmpty":0,"where":[]},"litLum":0.40081108909500535,"darkLum":0.03324595056782084,"revealed":{"visible":true,"rendered":true,"pixels":172}}
+PASS  visible monsters stay readable at every drone phase (pixel luminance well above the dark frame mean)  {"minMean":0.178,"minMax":0.655,"frameMean":0.07,"samples":8}
+PASS  muzzle flash briefly lights the area around the shooter, then fades  {"before":0.074,"flash":0.1339,"after":0.0765}
+PASS  audio: real click -> running AudioContext, gunshots produce signal  {"ctx":"running","shots":81,"peak":0.844}
+PASS  audio: footsteps while walking (real WASD)
+PASS  audio: hit/kill/shot sounds match sim events 1:1, stone impact plays  {"hit":3,"killed":1,"shot":18,"stone":5,"simHit":3,"simKilled":1,"simShot":18,"peak":0.662,"dead":"dead"}
+PASS  audio: wave alarm + monster spawn growls  {"wave_start":1,"spawn":2}
+PASS  audio: gameplay hash identical muted vs unmuted  {"a":"cd2a664e","b":"cd2a664e"}
+PASS  audio: real M key toggles mute  {"m1":true,"m2":false}
+PASS  pause menu: real Esc opens the menu and freezes the simulation  {"open":true,"paused":true,"tick":1,"visible":true}
+PASS  pause menu: real clicks switch player/monster/environment/camera and the lens slider; assets load without errors  {"active":{"player":"vanguard","monster":"reaver","env":"kit2","camera":"persp"},"set":{"player":"vanguard","monster":"reaver","env":"kit2","camera":"persp","fov":10},"assets":[{"id":"vanguard","loaded":true,"tris":65564,"nodes":18},{"id":"reaver","loaded":true,"tris":52354,"nodes":19},{"id":"envkit","loaded":true,"tris":95912,"nodes":42}],"cam":{"mode":"persp","type":"PerspectiveCamera","fov":10,"focal35mm":137.2,"distance":91.44,"yawDeg":45,"pitchDeg":41.47,"expectedDistance":91.44},"errors":[]}
+PASS  pause menu: real Esc closes the menu and resumes the simulation  {"open":false,"paused":false,"tick":20}
+PASS  weak perspective: PerspectiveCamera, fixed yaw 45° / pitch ≈41.5° (same as iso), long lens (≥ 85 mm eq.), framing distance matches, no rotation while moving/aiming  {"before":{"mode":"persp","type":"PerspectiveCamera","fov":10,"focal35mm":137.2,"distance":91.44,"yawDeg":45,"pitchDeg":41.47,"expectedDistance":91.44},"after":{"mode":"persp","type":"PerspectiveCamera","fov":10,"focal35mm":137.2,"distance":91.44,"yawDeg":45,"pitchDeg":41.47,"expectedDistance":91.44}}
+PASS  projection: ortho keeps sizes constant across the screen; weak perspective differs slightly (near-iso, not orthographic)  {"persp":{"near":104.63,"far":101.79,"ratio":1.0278},"ortho":{"near":101.15,"far":101.15,"ratio":1}}
+PASS  settings persist across page reload (assets preloaded before the first frame)  {"active":{"player":"vanguard","monster":"reaver","env":"kit2","camera":"persp"},"cam":"PerspectiveCamera","errors":[]}
+PASS  move KeyW goes screen up [new assets + weak perspective]  {"screenDx":0,"screenDy":-49,"world":2.7}
+PASS  move KeyS goes screen down [new assets + weak perspective]  {"screenDx":0,"screenDy":50,"world":2.7}
+PASS  move KeyA goes screen left [new assets + weak perspective]  {"screenDx":-75,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [new assets + weak perspective]  {"screenDx":75,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [new assets + weak perspective]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [new assets + weak perspective]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [new assets + weak perspective]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0.0001,"vis":true,"fxImpactShot":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":2},{"k":2,"hit":"m3","hp":980,"endErr":0.0005,"vis":true,"fxImpactShot":3},{"k":3,"hit":"m4","hp":980,"endErr":0.0002,"vis":true,"fxImpactShot":4},{"k":4,"hit":"m5","hp":980,"endErr":0,"vis":true,"fxImpactShot":5},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":6},{"k":6,"hit":"m7","hp":980,"endErr":0.0001,"vis":true,"fxImpactShot":7},{"k":7,"hit":"m8","hp":980,"endErr":0.0002,"vis":true,"fxImpactShot":8}]}
+PASS  hidden behind cover, occluder reported [new assets + weak perspective]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [new assets + weak perspective]
+PASS  hidden outside sector [new assets + weak perspective]
+PASS  near circle sees behind the player [new assets + weak perspective]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [new assets + weak perspective]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [new assets + weak perspective]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":134,"solo":142,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":159,"solo":159,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [new assets + weak perspective]  {"dx":-1.53,"dz":1.53,"hp":940,"shots":3}
+PASS  waves 1→2→3 complete in order, victory [new assets + weak perspective]  {"phase":"victory","wave":3,"kills":18,"hp":76,"phases":["pre:0@0","wave:1@121","intermission:1@786","wave:2@967","intermission:2@1687","wave:3@1868","victory:3@2633"],"spawnHidden":18,"entered":18,"pathed":18,"attackers":2,"dmg":24}
+PASS  monsters spawn hidden behind cover and enter arena [new assets + weak perspective]  {"spawnHidden":18,"entered":18}
+PASS  monsters path around obstacles and attack [new assets + weak perspective]  {"pathed":18,"attackers":2,"dmg":24}
+PASS  combat result identical with classic/ortho and new assets/weak perspective (same sim hash)  {"classic":{"hash":"3f96e748","kills":3,"tick":841,"hp":100},"new":{"hash":"3f96e748","kills":3,"tick":841,"hp":100}}
+PASS  player anim states idle/aim/shoot/move/move+shoot + return to idle [Vanguard, weak perspective]  {"seq":["idle","aim","shoot","move","move+shoot","idle"]}
+PASS  player walks in 8 directions relative to aim, hands stay on the gun [Vanguard, weak perspective]  {"dirs":["fwd-left","left","back-left","back","back-right","right","fwd-right","fwd"],"maxGripError":0.015}
+PASS  monster anim states + transitions emerge→walk→windup→strike→hit→dead, idle [Reaver, weak perspective]  {"seq":["emerge","idle","walk","attack-windup","attack-strike","hit","dead"],"idle":"idle"}
+PASS  vanguard: visible in all 8 angles, proportions stable (silhouette height)  {"heights":[189,179,174,165,175,181,193,196],"pixels":[7523,8264,7989,7764,7347,7952,8092,8534],"heightVariation":0.158}
+PASS  reaver: visible in all 8 angles, proportions stable (silhouette height)  {"heights":[111,130,124,124,120,125,123,131],"pixels":[4923,4921,5092,4860,4711,4851,5070,4928],"heightVariation":0.153}
+PASS  vanguard: palette change through the shared spec (accent red→blue) applies consistently from all 8 angles, geometry unchanged  {"changedPixelsPerAngle":[756,1185,1109,711,777,964,1047,736],"silhouettePx":[[7523,7517],[8264,8257],[7989,7986],[7764,7763],[7347,7340],[7952,7950],[8092,8089],[8534,8533]]}
+PASS  environment kit: instanced kit pieces fitted to every obstacle, lamp sockets drive practical lights  {"lamps":145,"practicals":22,"tris":1488294,"drawCalls":1,"meshes":262}
+PASS  no runtime errors after stage-07 checks  {"errors":[]}
+PASS  move KeyW goes screen up [after reload]  {"screenDx":0,"screenDy":-48,"world":2.7}
+PASS  move KeyS goes screen down [after reload]  {"screenDx":0,"screenDy":50,"world":2.7}
+PASS  move KeyA goes screen left [after reload]  {"screenDx":-75,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [after reload]  {"screenDx":75,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [after reload]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [after reload]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [after reload]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0,"vis":true,"fxImpactShot":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":2},{"k":2,"hit":"m3","hp":980,"endErr":0.0001,"vis":true,"fxImpactShot":3},{"k":3,"hit":"m4","hp":980,"endErr":0.0005,"vis":true,"fxImpactShot":4},{"k":4,"hit":"m5","hp":980,"endErr":0.0002,"vis":true,"fxImpactShot":5},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":6},{"k":6,"hit":"m7","hp":980,"endErr":0.0004,"vis":true,"fxImpactShot":7},{"k":7,"hit":"m8","hp":980,"endErr":0.0005,"vis":true,"fxImpactShot":8}]}
+PASS  hidden behind cover, occluder reported [after reload]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [after reload]
+PASS  hidden outside sector [after reload]
+PASS  near circle sees behind the player [after reload]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [after reload]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [after reload]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":133,"solo":141,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":163,"solo":163,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [after reload]  {"dx":-1.53,"dz":1.53,"hp":940,"shots":3}
+PASS  no runtime errors (run1 + reload)  {"errors":[],"console":[]}
+PASS  move KeyW goes screen up [relaunch]  {"screenDx":0,"screenDy":-49,"world":2.7}
+PASS  move KeyS goes screen down [relaunch]  {"screenDx":0,"screenDy":58,"world":2.7}
+PASS  move KeyA goes screen left [relaunch]  {"screenDx":-88,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [relaunch]  {"screenDx":88,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [relaunch]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [relaunch]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [relaunch]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0,"vis":true,"fxImpactShot":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":2},{"k":2,"hit":"m3","hp":980,"endErr":0.0001,"vis":true,"fxImpactShot":3},{"k":3,"hit":"m4","hp":980,"endErr":0.0003,"vis":true,"fxImpactShot":4},{"k":4,"hit":"m5","hp":980,"endErr":0.0002,"vis":true,"fxImpactShot":5},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"fxImpactShot":6},{"k":6,"hit":"m7","hp":980,"endErr":0.0004,"vis":true,"fxImpactShot":7},{"k":7,"hit":"m8","hp":980,"endErr":0.0003,"vis":true,"fxImpactShot":8}]}
+PASS  hidden behind cover, occluder reported [relaunch]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [relaunch]
+PASS  hidden outside sector [relaunch]
+PASS  near circle sees behind the player [relaunch]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [relaunch]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [relaunch]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":128,"solo":136,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":148,"solo":148,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [relaunch]  {"dx":-1.59,"dz":1.59,"hp":920,"shots":4}
+PASS  no runtime errors (relaunch)  {"console":[]}
+
+92/92 checks passed

@@ -1,0 +1,35 @@
+{
+ "assets": {
+  "vanguard": {
+   "key": "9a89bd3995598bee-4.5.14",
+   "id": "vanguard",
+   "file": "public/assets/gen/vanguard.glb",
+   "tris": 65564,
+   "bytes": 2490508,
+   "seconds": 2.4,
+   "spec": "specs/vanguard.json",
+   "script": "gen_vanguard.py"
+  },
+  "reaver": {
+   "key": "7359ab3c9a742125-4.5.14",
+   "id": "reaver",
+   "file": "public/assets/gen/reaver.glb",
+   "tris": 52354,
+   "bytes": 1941340,
+   "seconds": 2.2,
+   "spec": "specs/reaver.json",
+   "script": "gen_reaver.py"
+  },
+  "envkit": {
+   "key": "d7433d7cea254803-4.5.14",
+   "id": "envkit",
+   "file": "public/assets/gen/envkit.glb",
+   "tris": 95912,
+   "bytes": 4025812,
+   "seconds": 2.9,
+   "spec": "specs/envkit.json",
+   "script": "gen_envkit.py"
+  }
+ },
+ "blender": "4.5.14"
+}

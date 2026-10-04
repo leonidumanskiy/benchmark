@@ -1,0 +1,13 @@
+
+> benchmark02-arena@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 C:/Users/Leonid/Downloads/benchmark_02_complete/benchmark_02_complete
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  12:40:13
+   Duration  300ms (tests 51%, transform 33%, import 14%, worker 1%)
+

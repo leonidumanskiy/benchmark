@@ -60,7 +60,24 @@ export class Lighting {
     this.nearGlow = new THREE.PointLight(0x9ab8e8, 7, CFG.vision.nearRadius * 1.8, 1.6);
     scene.add(this.nearGlow);
 
-    // practical lights from lamp anchors (fixed set => no shader recompiles)
+    this.setLamps(lamps);
+
+    // the drone
+    this.drone = buildDrone();
+    scene.add(this.drone.root);
+    this.droneSpot = new THREE.SpotLight(0xbfdcff, 85, 16, 0.5, 0.55, 1.2);
+    this.droneSpot.castShadow = true;
+    this.droneSpot.shadow.mapSize.set(1024, 1024);
+    this.droneSpot.shadow.bias = -0.0006; this.droneSpot.shadow.camera.near = 0.5;
+    scene.add(this.droneSpot, this.droneSpot.target);
+    this.dronePoint = new THREE.PointLight(0x5fd8ff, 1.5, 3, 2);
+    scene.add(this.dronePoint);
+  }
+
+  /** (Re)build the practical point lights from lamp anchors (fixed set per environment => no per-frame recompiles). */
+  setLamps(lamps: LampAnchor[]) {
+    for (const p of this.practicals) { this.scene.remove(p); p.dispose(); }
+    this.practicals.length = 0;
     const pick = (kind: LampAnchor['kind'], max: number) => lamps.filter((l) => l.kind === kind).slice(0, max);
     const sel: LampAnchor[] = [];
     // lair reds: one per gate, sitting over the spawn barricade
@@ -75,20 +92,10 @@ export class Lighting {
       const p = new THREE.PointLight(l.color, l.kind === 'cyan' ? 2.2 : isGate ? 14 : l.kind === 'amber' ? 6 : 3.5, l.kind === 'cyan' ? 3.2 : isGate ? 9 : 6.5, 1.7);
       p.position.copy(l.pos);
       p.userData.kind = l.kind;
-      scene.add(p);
+      this.scene.add(p);
       this.practicals.push(p);
     }
 
-    // the drone
-    this.drone = buildDrone();
-    scene.add(this.drone.root);
-    this.droneSpot = new THREE.SpotLight(0xbfdcff, 85, 16, 0.5, 0.55, 1.2);
-    this.droneSpot.castShadow = true;
-    this.droneSpot.shadow.mapSize.set(1024, 1024);
-    this.droneSpot.shadow.bias = -0.0006; this.droneSpot.shadow.camera.near = 0.5;
-    scene.add(this.droneSpot, this.droneSpot.target);
-    this.dronePoint = new THREE.PointLight(0x5fd8ff, 1.5, 3, 2);
-    scene.add(this.dronePoint);
   }
 
   /** world position of the drone at patrol time t */

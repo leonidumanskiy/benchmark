@@ -1,0 +1,25 @@
+{
+  "id": "vanguard",
+  "label": "Vanguard (new)",
+  "skeleton": {
+    "hipY": 0.96, "thigh": 0.44, "shin": 0.44, "upper": 0.29, "lower": 0.285,
+    "hipX": 0.12, "shoulderX": 0.25, "shoulderY": 0.15,
+    "spineY": 0.1, "chestY": 0.24, "neckY": 0.24, "headY": 0.07, "headZ": 0.02,
+    "stanceYaw": -0.55,
+    "gun": [-0.1, 0.24, 0.2], "gripR": [0, -0.1, 0.02], "gripL": [0, -0.09, 0.35], "muzzle": [0, 0, 0.92]
+  },
+  "palette": {
+    "armor": "#4d535c", "armorDark": "#24272d", "accent": "#b3221b", "suit": "#17181c", "webbing": "#2f2b24",
+    "metal": "#7d838c", "gun": "#2c2f35", "gunDark": "#121317", "decal": "#d9d4c8", "rubber": "#0e0f11",
+    "visor": "#ff9a2e", "lights": "#ff3324", "lens": "#59e6ff"
+  },
+  "equipment": {
+    "backpack": "comms",
+    "helmetCrest": true,
+    "pauldron": "heavy",
+    "kneePads": true,
+    "antenna": true,
+    "decal": "6"
+  },
+  "bake": { "aoDist": 0.22, "rays": 24 }
+}
