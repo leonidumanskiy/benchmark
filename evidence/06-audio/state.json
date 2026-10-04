@@ -1,0 +1,142 @@
+{
+ "state": {
+  "stage": "06-audio",
+  "paused": true,
+  "fps": 38,
+  "debug": false,
+  "tick": 665,
+  "time": 11.083,
+  "seed": 4,
+  "phase": "wave",
+  "wave": 1,
+  "waves": 3,
+  "toSpawn": 0,
+  "player": {
+   "x": 4.282,
+   "z": 2.225,
+   "vx": 0.962,
+   "vz": -3.645,
+   "hp": 100,
+   "alive": true,
+   "aimDeg": -88.957,
+   "aimX": 4.326,
+   "aimZ": -0.221,
+   "shots": 9
+  },
+  "monsters": [
+   {
+    "id": "m1",
+    "x": 4.328,
+    "z": -0.35,
+    "hp": 0,
+    "state": "dead",
+    "hurt": true,
+    "visible": true,
+    "reason": "near",
+    "occluder": null,
+    "dist": 2.575,
+    "angleDeg": 0.002
+   },
+   {
+    "id": "m2",
+    "x": 6.21,
+    "z": 3.21,
+    "hp": 0,
+    "state": "dead",
+    "hurt": false,
+    "visible": true,
+    "reason": "near",
+    "occluder": null,
+    "dist": 2.165,
+    "angleDeg": 116.032
+   },
+   {
+    "id": "m3",
+    "x": 2.767,
+    "z": 9.096,
+    "hp": 0,
+    "state": "dead",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 7.037,
+    "angleDeg": 168.61
+   },
+   {
+    "id": "m4",
+    "x": -7.588,
+    "z": -0.17,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 12.108,
+    "angleDeg": 79.639
+   }
+  ],
+  "lastShot": {
+   "id": 9,
+   "tick": 664,
+   "from": {
+    "x": 4.265,
+    "z": 2.285
+   },
+   "to": {
+    "x": 4.312,
+    "z": 0.38
+   },
+   "angle": -1.547,
+   "hitKind": "monster",
+   "hitId": "m1",
+   "material": "flesh",
+   "damage": 20,
+   "killed": true
+  },
+  "stats": {
+   "kills": 3,
+   "shots": 9,
+   "hits": 9,
+   "damageTaken": 0,
+   "attacks": 0
+  },
+  "errors": 0
+ },
+ "lighting": {
+  "droneT": 17.08,
+  "drone": {
+   "x": 12.78,
+   "y": 4.68,
+   "z": 6.35
+  },
+  "droneSpotTarget": [
+   14.06,
+   0,
+   6.02
+  ],
+  "lights": {
+   "practicals": 22,
+   "shadowCasters": 3
+  }
+ },
+ "fx": {
+  "sparks": 0,
+  "glow": 115,
+  "smoke": 49,
+  "debris": 62,
+  "timed": 16,
+  "lights": 3,
+  "spawned": {
+   "shot": 76,
+   "impact_flesh": 75,
+   "kill": 21,
+   "player_hit": 2,
+   "impact_stone": 1
+  },
+  "lastImpactTick": 664,
+  "lastImpactShot": 9,
+  "active": 235
+ }
+}

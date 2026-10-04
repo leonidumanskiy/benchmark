@@ -1,0 +1,29 @@
+html, body { margin: 0; height: 100%; overflow: hidden; background: #07090c; font-family: 'Segoe UI', system-ui, sans-serif; color: #dfe9f3; user-select: none; }
+#game { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; cursor: none; }
+#hud { position: fixed; inset: 0; pointer-events: none; }
+#hp { position: absolute; left: 24px; bottom: 24px; display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .12em; font-size: 12px; }
+#hp .bar { width: 220px; height: 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(140,200,255,.35); transform: skewX(-20deg); }
+#hp-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #39d0ff, #8ff7ff); box-shadow: 0 0 12px #39d0ff; transition: width .15s; }
+#hp-num { font-size: 18px; min-width: 36px; }
+#wave { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); text-align: center; letter-spacing: .3em; font-size: 14px; font-weight: 700; color: #bfe6ff; text-shadow: 0 0 10px rgba(60,170,255,.6); display: flex; flex-direction: column; gap: 4px; }
+#wave-sub { font-size: 11px; letter-spacing: .2em; color: #8aa4b8; font-weight: 500; }
+#kills { position: absolute; top: 20px; right: 24px; letter-spacing: .2em; font-size: 12px; color: #9fb4c6; }
+#kills b { color: #fff; font-size: 18px; margin-left: 6px; }
+#banner { position: absolute; top: 34%; width: 100%; text-align: center; font-size: 44px; font-weight: 800; letter-spacing: .35em; color: #e8f6ff; text-shadow: 0 0 24px rgba(80,180,255,.8); opacity: 0; transition: opacity .3s; }
+#banner.show { opacity: 1; }
+#banner small { display: block; font-size: 14px; letter-spacing: .3em; font-weight: 500; color: #9cc; margin-top: 10px; }
+#help { position: absolute; right: 24px; bottom: 22px; font-size: 11px; letter-spacing: .1em; color: #6b7f90; }
+#reticle { position: fixed; width: 26px; height: 26px; margin: -13px 0 0 -13px; pointer-events: none; left: 50%; top: 40%; }
+#reticle i { position: absolute; background: #bff4ff; box-shadow: 0 0 6px #4cf; }
+#reticle i:nth-child(1) { left: 12px; top: 0; width: 2px; height: 8px; }
+#reticle i:nth-child(2) { left: 12px; bottom: 0; width: 2px; height: 8px; }
+#reticle i:nth-child(3) { top: 12px; left: 0; height: 2px; width: 8px; }
+#reticle i:nth-child(4) { top: 12px; right: 0; height: 2px; width: 8px; }
+#debug-panel { position: fixed; left: 12px; top: 12px; font: 11px/1.35 Consolas, monospace; color: #9fe; background: rgba(0,0,0,.55); padding: 8px 10px; white-space: pre; display: none; pointer-events: none; }
+#debug-labels .lbl { position: fixed; transform: translate(-50%, -100%); font: 10px Consolas, monospace; background: rgba(0,0,0,.6); padding: 1px 4px; white-space: nowrap; pointer-events: none; }
+#damage { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at center, rgba(255,0,0,0) 45%, rgba(200,10,10,.55) 100%); }
+#reticle i { transition: transform .06s; }
+#reticle.hit i { background: #fff; box-shadow: 0 0 8px #fff, 0 0 14px #ff6a3a; }
+#reticle.hit i:nth-child(1) { transform: translateY(-3px); } #reticle.hit i:nth-child(2) { transform: translateY(3px); }
+#reticle.hit i:nth-child(3) { transform: translateX(-3px); } #reticle.hit i:nth-child(4) { transform: translateX(3px); }
+#reticle.kill i { background: #ff4a3a; box-shadow: 0 0 10px #ff2a1a; }

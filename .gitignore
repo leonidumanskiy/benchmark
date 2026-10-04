@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output (rebuild with `npm run build`; versioned stage archives live in builds/)
+dist/
+*.tsbuildinfo
+.vite/
+
+# Packaging scratch
+builds/_stage/
+
+# Default e2e output when --out is omitted
+evidence/tmp/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Env / local
+.env
+.env.*

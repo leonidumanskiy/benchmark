@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:," />
+  <title>Outpost Kepler — Arena</title>
+  <link rel="stylesheet" href="./src/ui/style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="hud">
+    <div id="hp"><div class="label">ARMOR</div><div class="bar"><div id="hp-fill"></div></div><span id="hp-num">100</span></div>
+    <div id="wave"><span id="wave-label">WAVE 1 / 3</span><span id="wave-sub"></span></div>
+    <div id="kills">KILLS <b id="kill-num">0</b></div>
+    <div id="banner"></div>
+    <div id="help">WASD move · Mouse aim · LMB fire · M mute · R restart · F3 debug</div>
+  </div>
+  <div id="damage"></div>
+  <div id="reticle"><i></i><i></i><i></i><i></i></div>
+  <div id="debug-panel"></div>
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

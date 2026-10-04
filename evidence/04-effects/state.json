@@ -1,0 +1,87 @@
+{
+ "state": {
+  "stage": "04-effects",
+  "paused": true,
+  "fps": 31,
+  "debug": false,
+  "tick": 51,
+  "time": 0.85,
+  "seed": 1,
+  "phase": "sandbox",
+  "wave": 0,
+  "waves": 3,
+  "toSpawn": 0,
+  "player": {
+   "x": -6.5,
+   "z": 1,
+   "vx": 0,
+   "vz": 0,
+   "hp": 100,
+   "alive": true,
+   "aimDeg": -90,
+   "aimX": -6.5,
+   "aimZ": -3.5,
+   "shots": 8
+  },
+  "monsters": [
+   {
+    "id": "m1",
+    "x": -6.5,
+    "z": -4.04,
+    "hp": 99940,
+    "state": "dummy",
+    "hurt": true,
+    "visible": true,
+    "reason": "sector_clear",
+    "occluder": null,
+    "dist": 5.04,
+    "angleDeg": 0
+   }
+  ],
+  "lastShot": {
+   "id": 8,
+   "tick": 50,
+   "from": {
+    "x": -6.5,
+    "z": 1
+   },
+   "to": {
+    "x": -6.5,
+    "z": -3.31
+   },
+   "angle": -1.571,
+   "hitKind": "monster",
+   "hitId": "m1",
+   "material": "flesh",
+   "damage": 20,
+   "killed": false
+  },
+  "stats": {
+   "kills": 0,
+   "shots": 8,
+   "hits": 3,
+   "damageTaken": 0,
+   "attacks": 0
+  },
+  "errors": 0
+ },
+ "fx": {
+  "sparks": 0,
+  "glow": 70,
+  "smoke": 42,
+  "debris": 52,
+  "timed": 10,
+  "lights": 2,
+  "spawned": {
+   "shot": 182,
+   "impact_flesh": 155,
+   "kill": 40,
+   "player_hit": 2,
+   "impact_metal": 13,
+   "impact_stone": 14
+  },
+  "lastImpactTick": 50,
+  "lastImpactShot": 8,
+  "active": 171
+ }
+}

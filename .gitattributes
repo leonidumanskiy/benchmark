@@ -1,0 +1,23 @@
+# Normalise line endings for text; keep Windows scripts as CRLF
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Archives, incl. the stage builds in builds/, via Git LFS
+*.zip filter=lfs diff=lfs merge=lfs -text
+
+# Images (references, evidence screenshots) via Git LFS
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+
+# Audio / fonts / other binaries, if ever added
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.woff2 binary
+*.glb filter=lfs diff=lfs merge=lfs -text
+
+# Lockfile: collapse in diffs
+package-lock.json -diff linguist-generated

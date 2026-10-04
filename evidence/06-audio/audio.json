@@ -1,0 +1,20 @@
+{
+ "played": {
+  "shot": 233,
+  "monster_hit": 80,
+  "step": 36,
+  "wave_start": 7,
+  "monster_spawn": 32,
+  "monster_killed": 22,
+  "player_hit": 2,
+  "monster_attack": 2,
+  "wave_clear": 2,
+  "victory": 1,
+  "impact_stone": 82,
+  "impact_metal": 71
+ },
+ "ctx": "running",
+ "muted": false,
+ "volume": 0.7,
+ "peak": 1.483
+}

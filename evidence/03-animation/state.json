@@ -1,0 +1,143 @@
+{
+ "state": {
+  "stage": "03-animation",
+  "paused": true,
+  "fps": 56,
+  "debug": false,
+  "tick": 601,
+  "time": 10.017,
+  "seed": 4,
+  "phase": "wave",
+  "wave": 1,
+  "waves": 3,
+  "toSpawn": 0,
+  "player": {
+   "x": 7.791,
+   "z": -4.505,
+   "vx": 3.818,
+   "vz": -3.818,
+   "hp": 100,
+   "alive": true,
+   "aimDeg": 112.312,
+   "aimX": 2.971,
+   "aimZ": 7.241,
+   "shots": 3
+  },
+  "monsters": [
+   {
+    "id": "m1",
+    "x": 4.066,
+    "z": -4.145,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 3.742,
+    "angleDeg": 62.158
+   },
+   {
+    "id": "m2",
+    "x": 7.421,
+    "z": 0.432,
+    "hp": 0,
+    "state": "dead",
+    "hurt": false,
+    "visible": true,
+    "reason": "sector_clear",
+    "occluder": null,
+    "dist": 4.951,
+    "angleDeg": 18.025
+   },
+   {
+    "id": "m3",
+    "x": 3.003,
+    "z": 7.143,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": true,
+    "reason": "sector_clear",
+    "occluder": null,
+    "dist": 12.593,
+    "angleDeg": 0.034
+   },
+   {
+    "id": "m4",
+    "x": -10.333,
+    "z": -1.318,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 18.402,
+    "angleDeg": 57.715
+   }
+  ],
+  "lastShot": {
+   "id": 3,
+   "tick": 560,
+   "from": {
+    "x": 5.182,
+    "z": -1.896
+   },
+   "to": {
+    "x": 6.915,
+    "z": -0.094
+   },
+   "angle": 0.805,
+   "hitKind": "monster",
+   "hitId": "m2",
+   "material": "flesh",
+   "damage": 20,
+   "killed": true
+  },
+  "stats": {
+   "kills": 1,
+   "shots": 3,
+   "hits": 3,
+   "damageTaken": 0,
+   "attacks": 0
+  },
+  "errors": 0
+ },
+ "anim": {
+  "player": {
+   "state": "move",
+   "dir": "back-left",
+   "walk": 0.93,
+   "aim": 1,
+   "recoil": 0,
+   "gripError": 0.009
+  },
+  "monsters": [
+   {
+    "id": "m1",
+    "state": "walk",
+    "stepping": 2,
+    "hit": 0
+   },
+   {
+    "id": "m2",
+    "state": "dead",
+    "stepping": 0,
+    "hit": 0
+   },
+   {
+    "id": "m3",
+    "state": "walk",
+    "stepping": 2,
+    "hit": 0
+   },
+   {
+    "id": "m4",
+    "state": "walk",
+    "stepping": 2,
+    "hit": 0
+   }
+  ]
+ }
+}

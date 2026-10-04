@@ -1,0 +1,145 @@
+{
+ "state": {
+  "stage": "01-tech",
+  "paused": true,
+  "fps": 60,
+  "debug": true,
+  "tick": 541,
+  "time": 9.017,
+  "seed": 2,
+  "phase": "wave",
+  "wave": 1,
+  "waves": 3,
+  "toSpawn": 0,
+  "player": {
+   "x": 0,
+   "z": 2,
+   "vx": 0,
+   "vz": 0,
+   "hp": 100,
+   "alive": true,
+   "aimDeg": -104.415,
+   "aimX": -2.24,
+   "aimZ": -6.716,
+   "shots": 3
+  },
+  "monsters": [
+   {
+    "id": "m1",
+    "x": -2.285,
+    "z": -6.89,
+    "hp": 0,
+    "state": "dead",
+    "hurt": true,
+    "visible": true,
+    "reason": "sector_clear",
+    "occluder": null,
+    "dist": 9.179,
+    "angleDeg": 0
+   },
+   {
+    "id": "m2",
+    "x": 7.443,
+    "z": 2.783,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 7.484,
+    "angleDeg": 110.417
+   },
+   {
+    "id": "m3",
+    "x": 2.014,
+    "z": 10.267,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 8.509,
+    "angleDeg": 179.278
+   },
+   {
+    "id": "m4",
+    "x": -13.451,
+    "z": 2.31,
+    "hp": 60,
+    "state": "chase",
+    "hurt": false,
+    "visible": false,
+    "reason": "out_of_sector",
+    "occluder": null,
+    "dist": 13.455,
+    "angleDeg": 76.907
+   }
+  ],
+  "lastShot": {
+   "id": 3,
+   "tick": 532,
+   "from": {
+    "x": 0,
+    "z": 2
+   },
+   "to": {
+    "x": -2.103,
+    "z": -6.183
+   },
+   "angle": -1.822,
+   "hitKind": "monster",
+   "hitId": "m1",
+   "material": "flesh",
+   "damage": 20,
+   "killed": true
+  },
+  "stats": {
+   "kills": 1,
+   "shots": 3,
+   "hits": 3,
+   "damageTaken": 0,
+   "attacks": 0
+  },
+  "errors": 0
+ },
+ "visibility": [
+  {
+   "id": "m1",
+   "visible": true,
+   "reason": "sector_clear",
+   "occluder": null,
+   "dist": 9.178989296120013,
+   "angleDeg": 1.2722218725854067e-14,
+   "rendered": true
+  },
+  {
+   "id": "m2",
+   "visible": false,
+   "reason": "out_of_sector",
+   "occluder": null,
+   "dist": 7.483625382297029,
+   "angleDeg": 110.41729963899603,
+   "rendered": false
+  },
+  {
+   "id": "m3",
+   "visible": false,
+   "reason": "out_of_sector",
+   "occluder": null,
+   "dist": 8.50872994654156,
+   "angleDeg": 179.27770062010762,
+   "rendered": false
+  },
+  {
+   "id": "m4",
+   "visible": false,
+   "reason": "out_of_sector",
+   "occluder": null,
+   "dist": 13.454605213346108,
+   "angleDeg": 76.90650956750765,
+   "rendered": false
+  }
+ ]
+}

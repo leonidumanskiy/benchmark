@@ -1,0 +1,693 @@
+{
+ "url": "http://localhost:8090/",
+ "dir": "dist",
+ "stage": 4,
+ "passed": 52,
+ "failed": 0,
+ "results": [
+  {
+   "name": "boot: game API present, stage tag",
+   "ok": true,
+   "stage": "04-effects",
+   "gl": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+  },
+  {
+   "name": "move KeyW goes screen up [run1]",
+   "ok": true,
+   "screenDx": 0,
+   "screenDy": -58,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyS goes screen down [run1]",
+   "ok": true,
+   "screenDx": 0,
+   "screenDy": 49,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyA goes screen left [run1]",
+   "ok": true,
+   "screenDx": -75,
+   "screenDy": 0,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyD goes screen right [run1]",
+   "ok": true,
+   "screenDx": 88,
+   "screenDy": 0,
+   "world": 2.7
+  },
+  {
+   "name": "diagonal W+D normalised [run1]",
+   "ok": true,
+   "diag": 2.7,
+   "straight": 2.7
+  },
+  {
+   "name": "collision with cover (no penetration) [run1]",
+   "ok": true,
+   "z": -9.6,
+   "coverFace": -10.05
+  },
+  {
+   "name": "8 targets around player hit via real mouse [run1]",
+   "ok": true,
+   "hits": 8,
+   "rows": [
+    {
+     "k": 0,
+     "hit": "m1",
+     "hp": 980,
+     "endErr": 0,
+     "vis": true,
+     "fxImpactShot": 1
+    },
+    {
+     "k": 1,
+     "hit": "m2",
+     "hp": 980,
+     "endErr": 0.0006,
+     "vis": true,
+     "fxImpactShot": 2
+    },
+    {
+     "k": 2,
+     "hit": "m3",
+     "hp": 980,
+     "endErr": 0.0001,
+     "vis": true,
+     "fxImpactShot": 3
+    },
+    {
+     "k": 3,
+     "hit": "m4",
+     "hp": 980,
+     "endErr": 0.0003,
+     "vis": true,
+     "fxImpactShot": 4
+    },
+    {
+     "k": 4,
+     "hit": "m5",
+     "hp": 980,
+     "endErr": 0.0002,
+     "vis": true,
+     "fxImpactShot": 5
+    },
+    {
+     "k": 5,
+     "hit": "m6",
+     "hp": 980,
+     "endErr": 0.0006,
+     "vis": true,
+     "fxImpactShot": 6
+    },
+    {
+     "k": 6,
+     "hit": "m7",
+     "hp": 980,
+     "endErr": 0.0004,
+     "vis": true,
+     "fxImpactShot": 7
+    },
+    {
+     "k": 7,
+     "hit": "m8",
+     "hp": 980,
+     "endErr": 0.0003,
+     "vis": true,
+     "fxImpactShot": 8
+    }
+   ]
+  },
+  {
+   "name": "hidden behind cover, occluder reported [run1]",
+   "ok": true,
+   "v": {
+    "id": "m1",
+    "visible": false,
+    "reason": "occluded",
+    "occluder": "cover_e",
+    "dist": 8,
+    "angleDeg": 3.57633437499736,
+    "rendered": false
+   }
+  },
+  {
+   "name": "visible in sector with clear LOS [run1]",
+   "ok": true
+  },
+  {
+   "name": "hidden outside sector [run1]",
+   "ok": true
+  },
+  {
+   "name": "near circle sees behind the player [run1]",
+   "ok": true
+  },
+  {
+   "name": "sector boundary inclusive (edge visible, +0.11° hidden) [run1]",
+   "ok": true,
+   "edgeIn": 31.999999999999996,
+   "edgeOut": 32.11459155902616
+  },
+  {
+   "name": "rendered pixels match gameplay visibility [run1]",
+   "ok": true,
+   "cov": {
+    "m1": {
+     "full": 0,
+     "solo": 0,
+     "visibleFlag": false
+    },
+    "m2": {
+     "full": 126,
+     "solo": 133,
+     "visibleFlag": true
+    },
+    "m3": {
+     "full": 0,
+     "solo": 0,
+     "visibleFlag": false
+    },
+    "m4": {
+     "full": 149,
+     "solo": 149,
+     "visibleFlag": true
+    }
+   }
+  },
+  {
+   "name": "real-time keys + held mouse fire [run1]",
+   "ok": true,
+   "dx": -1.59,
+   "dz": 1.59,
+   "hp": 920,
+   "shots": 4
+  },
+  {
+   "name": "waves 1→2→3 complete in order, victory [run1]",
+   "ok": true,
+   "phase": "victory",
+   "wave": 3,
+   "kills": 18,
+   "hp": 76,
+   "phases": [
+    "pre:0@0",
+    "wave:1@121",
+    "intermission:1@786",
+    "wave:2@967",
+    "intermission:2@1687",
+    "wave:3@1868",
+    "victory:3@2633"
+   ],
+   "spawnHidden": 18,
+   "entered": 18,
+   "pathed": 18,
+   "attackers": 2,
+   "dmg": 24
+  },
+  {
+   "name": "monsters spawn hidden behind cover and enter arena [run1]",
+   "ok": true,
+   "spawnHidden": 18,
+   "entered": 18
+  },
+  {
+   "name": "monsters path around obstacles and attack [run1]",
+   "ok": true,
+   "pathed": 18,
+   "attackers": 2,
+   "dmg": 24
+  },
+  {
+   "name": "hit, damage, body reaction, impact effect and hit-marker happen on the same tick/frame",
+   "ok": true,
+   "shotTick": 3,
+   "hitTick": 3,
+   "hitShot": 1,
+   "shotId": 1,
+   "fxImpactTick": 3,
+   "fxImpactShot": 1,
+   "hp": 980,
+   "anim": "hit",
+   "reticleHit": true,
+   "spawned": {
+    "shot": 67,
+    "impact_flesh": 67,
+    "kill": 18,
+    "player_hit": 2
+   },
+   "tracerEnd": {
+    "x": -3.083,
+    "z": -0.642
+   }
+  },
+  {
+   "name": "effects end: particles/lights/flashes gone after 3 s, decals faded after 12 s, no leaked objects",
+   "ok": true,
+   "midActive": 73,
+   "after3": 0,
+   "lights": 0,
+   "decalsAfter12": 0,
+   "children": [
+    8,
+    8
+   ]
+  },
+  {
+   "name": "intense fire stays readable: <3% blown-out pixels, all visible monsters still drawn, bounded particle counts",
+   "ok": true,
+   "samples": [
+    {
+     "ms": 51.5,
+     "whiteFrac": 0,
+     "meanLum": 0.198,
+     "visibleDrawn": 5,
+     "visible": 5,
+     "fx": 102
+    },
+    {
+     "ms": 12.1,
+     "whiteFrac": 0,
+     "meanLum": 0.2,
+     "visibleDrawn": 6,
+     "visible": 6,
+     "fx": 124
+    },
+    {
+     "ms": 3.6,
+     "whiteFrac": 0,
+     "meanLum": 0.202,
+     "visibleDrawn": 6,
+     "visible": 6,
+     "fx": 134
+    },
+    {
+     "ms": 3.1,
+     "whiteFrac": 0,
+     "meanLum": 0.201,
+     "visibleDrawn": 6,
+     "visible": 6,
+     "fx": 142
+    },
+    {
+     "ms": 3.1,
+     "whiteFrac": 0,
+     "meanLum": 0.2,
+     "visibleDrawn": 6,
+     "visible": 6,
+     "fx": 146
+    },
+    {
+     "ms": 2.9,
+     "whiteFrac": 0,
+     "meanLum": 0.198,
+     "visibleDrawn": 5,
+     "visible": 5,
+     "fx": 145
+    }
+   ],
+   "msPerTickAndFrame": 2.45
+  },
+  {
+   "name": "combat results identical with FX on / off / 3x intensity (hash, kills, shots, damage, last shot rays)",
+   "ok": true,
+   "fxOn": "8da40cca",
+   "fxOff": "8da40cca",
+   "fx3x": "8da40cca",
+   "stats": {
+    "kills": 11,
+    "shots": 35,
+    "hits": 33,
+    "damageTaken": 0,
+    "attacks": 0
+   }
+  },
+  {
+   "name": "move KeyW goes screen up [after reload]",
+   "ok": true,
+   "screenDx": 0,
+   "screenDy": -49,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyS goes screen down [after reload]",
+   "ok": true,
+   "screenDx": 0,
+   "screenDy": 58,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyA goes screen left [after reload]",
+   "ok": true,
+   "screenDx": -88,
+   "screenDy": 0,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyD goes screen right [after reload]",
+   "ok": true,
+   "screenDx": 75,
+   "screenDy": 0,
+   "world": 2.7
+  },
+  {
+   "name": "diagonal W+D normalised [after reload]",
+   "ok": true,
+   "diag": 2.7,
+   "straight": 2.7
+  },
+  {
+   "name": "collision with cover (no penetration) [after reload]",
+   "ok": true,
+   "z": -9.6,
+   "coverFace": -10.05
+  },
+  {
+   "name": "8 targets around player hit via real mouse [after reload]",
+   "ok": true,
+   "hits": 8,
+   "rows": [
+    {
+     "k": 0,
+     "hit": "m1",
+     "hp": 980,
+     "endErr": 0,
+     "vis": true,
+     "fxImpactShot": 1
+    },
+    {
+     "k": 1,
+     "hit": "m2",
+     "hp": 980,
+     "endErr": 0.0006,
+     "vis": true,
+     "fxImpactShot": 2
+    },
+    {
+     "k": 2,
+     "hit": "m3",
+     "hp": 980,
+     "endErr": 0.0001,
+     "vis": true,
+     "fxImpactShot": 3
+    },
+    {
+     "k": 3,
+     "hit": "m4",
+     "hp": 980,
+     "endErr": 0.0003,
+     "vis": true,
+     "fxImpactShot": 4
+    },
+    {
+     "k": 4,
+     "hit": "m5",
+     "hp": 980,
+     "endErr": 0.0002,
+     "vis": true,
+     "fxImpactShot": 5
+    },
+    {
+     "k": 5,
+     "hit": "m6",
+     "hp": 980,
+     "endErr": 0.0006,
+     "vis": true,
+     "fxImpactShot": 6
+    },
+    {
+     "k": 6,
+     "hit": "m7",
+     "hp": 980,
+     "endErr": 0.0004,
+     "vis": true,
+     "fxImpactShot": 7
+    },
+    {
+     "k": 7,
+     "hit": "m8",
+     "hp": 980,
+     "endErr": 0.0003,
+     "vis": true,
+     "fxImpactShot": 8
+    }
+   ]
+  },
+  {
+   "name": "hidden behind cover, occluder reported [after reload]",
+   "ok": true,
+   "v": {
+    "id": "m1",
+    "visible": false,
+    "reason": "occluded",
+    "occluder": "cover_e",
+    "dist": 8,
+    "angleDeg": 3.57633437499736,
+    "rendered": false
+   }
+  },
+  {
+   "name": "visible in sector with clear LOS [after reload]",
+   "ok": true
+  },
+  {
+   "name": "hidden outside sector [after reload]",
+   "ok": true
+  },
+  {
+   "name": "near circle sees behind the player [after reload]",
+   "ok": true
+  },
+  {
+   "name": "sector boundary inclusive (edge visible, +0.11° hidden) [after reload]",
+   "ok": true,
+   "edgeIn": 31.999999999999996,
+   "edgeOut": 32.11459155902616
+  },
+  {
+   "name": "rendered pixels match gameplay visibility [after reload]",
+   "ok": true,
+   "cov": {
+    "m1": {
+     "full": 0,
+     "solo": 0,
+     "visibleFlag": false
+    },
+    "m2": {
+     "full": 128,
+     "solo": 135,
+     "visibleFlag": true
+    },
+    "m3": {
+     "full": 0,
+     "solo": 0,
+     "visibleFlag": false
+    },
+    "m4": {
+     "full": 148,
+     "solo": 148,
+     "visibleFlag": true
+    }
+   }
+  },
+  {
+   "name": "real-time keys + held mouse fire [after reload]",
+   "ok": true,
+   "dx": -1.53,
+   "dz": 1.53,
+   "hp": 920,
+   "shots": 4
+  },
+  {
+   "name": "no runtime errors (run1 + reload)",
+   "ok": true,
+   "errors": [],
+   "console": []
+  },
+  {
+   "name": "move KeyW goes screen up [relaunch]",
+   "ok": true,
+   "screenDx": 0,
+   "screenDy": -58,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyS goes screen down [relaunch]",
+   "ok": true,
+   "screenDx": 0,
+   "screenDy": 49,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyA goes screen left [relaunch]",
+   "ok": true,
+   "screenDx": -88,
+   "screenDy": 0,
+   "world": 2.7
+  },
+  {
+   "name": "move KeyD goes screen right [relaunch]",
+   "ok": true,
+   "screenDx": 88,
+   "screenDy": 0,
+   "world": 2.7
+  },
+  {
+   "name": "diagonal W+D normalised [relaunch]",
+   "ok": true,
+   "diag": 2.7,
+   "straight": 2.7
+  },
+  {
+   "name": "collision with cover (no penetration) [relaunch]",
+   "ok": true,
+   "z": -9.6,
+   "coverFace": -10.05
+  },
+  {
+   "name": "8 targets around player hit via real mouse [relaunch]",
+   "ok": true,
+   "hits": 8,
+   "rows": [
+    {
+     "k": 0,
+     "hit": "m1",
+     "hp": 980,
+     "endErr": 0,
+     "vis": true,
+     "fxImpactShot": 1
+    },
+    {
+     "k": 1,
+     "hit": "m2",
+     "hp": 980,
+     "endErr": 0.0006,
+     "vis": true,
+     "fxImpactShot": 2
+    },
+    {
+     "k": 2,
+     "hit": "m3",
+     "hp": 980,
+     "endErr": 0.0001,
+     "vis": true,
+     "fxImpactShot": 3
+    },
+    {
+     "k": 3,
+     "hit": "m4",
+     "hp": 980,
+     "endErr": 0.0003,
+     "vis": true,
+     "fxImpactShot": 4
+    },
+    {
+     "k": 4,
+     "hit": "m5",
+     "hp": 980,
+     "endErr": 0.0002,
+     "vis": true,
+     "fxImpactShot": 5
+    },
+    {
+     "k": 5,
+     "hit": "m6",
+     "hp": 980,
+     "endErr": 0.0006,
+     "vis": true,
+     "fxImpactShot": 6
+    },
+    {
+     "k": 6,
+     "hit": "m7",
+     "hp": 980,
+     "endErr": 0.0004,
+     "vis": true,
+     "fxImpactShot": 7
+    },
+    {
+     "k": 7,
+     "hit": "m8",
+     "hp": 980,
+     "endErr": 0.0003,
+     "vis": true,
+     "fxImpactShot": 8
+    }
+   ]
+  },
+  {
+   "name": "hidden behind cover, occluder reported [relaunch]",
+   "ok": true,
+   "v": {
+    "id": "m1",
+    "visible": false,
+    "reason": "occluded",
+    "occluder": "cover_e",
+    "dist": 8,
+    "angleDeg": 3.57633437499736,
+    "rendered": false
+   }
+  },
+  {
+   "name": "visible in sector with clear LOS [relaunch]",
+   "ok": true
+  },
+  {
+   "name": "hidden outside sector [relaunch]",
+   "ok": true
+  },
+  {
+   "name": "near circle sees behind the player [relaunch]",
+   "ok": true
+  },
+  {
+   "name": "sector boundary inclusive (edge visible, +0.11° hidden) [relaunch]",
+   "ok": true,
+   "edgeIn": 31.999999999999996,
+   "edgeOut": 32.11459155902616
+  },
+  {
+   "name": "rendered pixels match gameplay visibility [relaunch]",
+   "ok": true,
+   "cov": {
+    "m1": {
+     "full": 0,
+     "solo": 0,
+     "visibleFlag": false
+    },
+    "m2": {
+     "full": 126,
+     "solo": 133,
+     "visibleFlag": true
+    },
+    "m3": {
+     "full": 0,
+     "solo": 0,
+     "visibleFlag": false
+    },
+    "m4": {
+     "full": 149,
+     "solo": 149,
+     "visibleFlag": true
+    }
+   }
+  },
+  {
+   "name": "real-time keys + held mouse fire [relaunch]",
+   "ok": true,
+   "dx": -1.53,
+   "dz": 1.53,
+   "hp": 920,
+   "shots": 4
+  },
+  {
+   "name": "no runtime errors (relaunch)",
+   "ok": true,
+   "console": []
+  }
+ ]
+}

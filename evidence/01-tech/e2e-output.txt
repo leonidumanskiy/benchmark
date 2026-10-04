@@ -1,0 +1,50 @@
+PASS  boot: game API present, stage tag  {"stage":"01-tech","gl":"ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)"}
+PASS  move KeyW goes screen up [run1]  {"screenDx":0,"screenDy":-44,"world":2.7}
+PASS  move KeyS goes screen down [run1]  {"screenDx":0,"screenDy":38,"world":2.7}
+PASS  move KeyA goes screen left [run1]  {"screenDx":-67,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [run1]  {"screenDx":57,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [run1]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [run1]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [run1]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0.0002,"vis":true,"tracers":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"tracers":1},{"k":2,"hit":"m3","hp":980,"endErr":0.0001,"vis":true,"tracers":1},{"k":3,"hit":"m4","hp":980,"endErr":0.0005,"vis":true,"tracers":1},{"k":4,"hit":"m5","hp":980,"endErr":0.0001,"vis":true,"tracers":1},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"tracers":1},{"k":6,"hit":"m7","hp":980,"endErr":0,"vis":true,"tracers":1},{"k":7,"hit":"m8","hp":980,"endErr":0.0005,"vis":true,"tracers":1}]}
+PASS  hidden behind cover, occluder reported [run1]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [run1]
+PASS  hidden outside sector [run1]
+PASS  near circle sees behind the player [run1]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [run1]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [run1]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":106,"solo":106,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":103,"solo":103,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [run1]  {"dx":-1.59,"dz":1.59,"hp":940,"shots":3}
+PASS  waves 1→2→3 complete in order, victory [run1]  {"phase":"victory","wave":3,"kills":18,"hp":76,"phases":["pre:0@0","wave:1@121","intermission:1@786","wave:2@967","intermission:2@1687","wave:3@1868","victory:3@2633"],"spawnHidden":18,"entered":18,"pathed":18,"attackers":2,"dmg":24}
+PASS  monsters spawn hidden behind cover and enter arena [run1]  {"spawnHidden":18,"entered":18}
+PASS  monsters path around obstacles and attack [run1]  {"pathed":18,"attackers":2,"dmg":24}
+PASS  move KeyW goes screen up [after reload]  {"screenDx":0,"screenDy":-44,"world":2.7}
+PASS  move KeyS goes screen down [after reload]  {"screenDx":0,"screenDy":44,"world":2.7}
+PASS  move KeyA goes screen left [after reload]  {"screenDx":-67,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [after reload]  {"screenDx":67,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [after reload]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [after reload]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [after reload]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0.0002,"vis":true,"tracers":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"tracers":1},{"k":2,"hit":"m3","hp":980,"endErr":0.0001,"vis":true,"tracers":1},{"k":3,"hit":"m4","hp":980,"endErr":0.0005,"vis":true,"tracers":1},{"k":4,"hit":"m5","hp":980,"endErr":0.0001,"vis":true,"tracers":1},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"tracers":1},{"k":6,"hit":"m7","hp":980,"endErr":0,"vis":true,"tracers":1},{"k":7,"hit":"m8","hp":980,"endErr":0.0005,"vis":true,"tracers":1}]}
+PASS  hidden behind cover, occluder reported [after reload]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [after reload]
+PASS  hidden outside sector [after reload]
+PASS  near circle sees behind the player [after reload]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [after reload]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [after reload]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":106,"solo":106,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":103,"solo":103,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [after reload]  {"dx":-1.59,"dz":1.59,"hp":940,"shots":3}
+PASS  no runtime errors (run1 + reload)  {"errors":[],"console":[]}
+PASS  move KeyW goes screen up [relaunch]  {"screenDx":0,"screenDy":-44,"world":2.7}
+PASS  move KeyS goes screen down [relaunch]  {"screenDx":0,"screenDy":44,"world":2.7}
+PASS  move KeyA goes screen left [relaunch]  {"screenDx":-67,"screenDy":0,"world":2.7}
+PASS  move KeyD goes screen right [relaunch]  {"screenDx":67,"screenDy":0,"world":2.7}
+PASS  diagonal W+D normalised [relaunch]  {"diag":2.7,"straight":2.7}
+PASS  collision with cover (no penetration) [relaunch]  {"z":-9.6,"coverFace":-10.05}
+PASS  8 targets around player hit via real mouse [relaunch]  {"hits":8,"rows":[{"k":0,"hit":"m1","hp":980,"endErr":0.0002,"vis":true,"tracers":1},{"k":1,"hit":"m2","hp":980,"endErr":0.0006,"vis":true,"tracers":1},{"k":2,"hit":"m3","hp":980,"endErr":0.0001,"vis":true,"tracers":1},{"k":3,"hit":"m4","hp":980,"endErr":0.0005,"vis":true,"tracers":1},{"k":4,"hit":"m5","hp":980,"endErr":0.0001,"vis":true,"tracers":1},{"k":5,"hit":"m6","hp":980,"endErr":0.0006,"vis":true,"tracers":1},{"k":6,"hit":"m7","hp":980,"endErr":0,"vis":true,"tracers":1},{"k":7,"hit":"m8","hp":980,"endErr":0.0005,"vis":true,"tracers":1}]}
+PASS  hidden behind cover, occluder reported [relaunch]  {"v":{"id":"m1","visible":false,"reason":"occluded","occluder":"cover_e","dist":8,"angleDeg":3.57633437499736,"rendered":false}}
+PASS  visible in sector with clear LOS [relaunch]
+PASS  hidden outside sector [relaunch]
+PASS  near circle sees behind the player [relaunch]
+PASS  sector boundary inclusive (edge visible, +0.11° hidden) [relaunch]  {"edgeIn":31.999999999999996,"edgeOut":32.11459155902616}
+PASS  rendered pixels match gameplay visibility [relaunch]  {"cov":{"m1":{"full":0,"solo":0,"visibleFlag":false},"m2":{"full":106,"solo":106,"visibleFlag":true},"m3":{"full":0,"solo":0,"visibleFlag":false},"m4":{"full":103,"solo":103,"visibleFlag":true}}}
+PASS  real-time keys + held mouse fire [relaunch]  {"dx":-1.59,"dz":1.59,"hp":940,"shots":3}
+PASS  no runtime errors (relaunch)  {"console":[]}
+
+48/48 checks passed

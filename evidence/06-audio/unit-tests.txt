@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 C:/Users/Leonid/Downloads/benchmark_02_complete/benchmark_02_complete
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  12:53:32
+   Duration  292ms (tests 51%, transform 35%, import 13%, worker 1%)
+
