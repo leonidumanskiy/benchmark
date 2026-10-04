@@ -5,6 +5,9 @@ import { InputController } from './input';
 import { Hud } from './ui/hud';
 import { installApi } from './api';
 import { SoundSystem } from './audio/sound';
+import { loadSettings, saveSettings } from './settings';
+import { PauseMenu } from './ui/menu';
+import { hdReady } from './assets/hd/hd';
 
 // ---- error capture first, so boot failures are visible to tooling
 export const errors: string[] = [];
@@ -23,6 +26,21 @@ const input = new InputController(canvas);
 const hud = new Hud();
 const sound = new SoundSystem(sim);
 if (params.get('mute') === '1') sound.setMuted(true);
+const settings = loadSettings(params);
+const menu = new PauseMenu(settings);
+const settingsStatus = () => {
+  const s = view.settings;
+  const parts = (['player', 'monster', 'envkit'] as const).map((k) => { const a = hdReady(k); return a ? `${k} ${(a.tris / 1000).toFixed(1)}k tris` : null; }).filter(Boolean);
+  menu.setStatus(view.hdError ? 'HD load failed: ' + view.hdError : (s.camera === 'persp' ? `weak perspective · ${s.focal} mm` : 'orthographic isometric') + (parts.length ? '\nHD loaded: ' + parts.join(' · ') : ''));
+};
+export function applySettings(s: typeof settings) {
+  saveSettings(s); menu.set(s);
+  menu.setStatus('loading…');
+  return view.applySettings(s).then(settingsStatus);
+}
+menu.onChange = (s) => { void applySettings(s); };
+menu.onResume = () => { loop.paused = false; menu.show(false); };
+void view.applySettings(settings).then(settingsStatus);
 
 export const loop = { paused: params.get('paused') === '1', acc: 0, last: performance.now(), frames: 0, fps: 0, fpsT: 0, timeScale: 1 };
 const pending: GameEvent[] = [];
@@ -43,7 +61,7 @@ export function renderFrame(dt: number) {
 input.onAction = (a) => {
   if (a === 'reset') { sim.reset({ seed: sim.seed, waves: sim.phase !== 'sandbox' }); view.onReset(); view.updateCamera(true); hud.reset(); sound.reset(); }
   if (a === 'debug') { view.debug = !view.debug; }
-  if (a === 'pause') loop.paused = !loop.paused;
+  if (a === 'pause') { loop.paused = !menu.open; menu.show(loop.paused); if (menu.open) settingsStatus(); }
   if (a === 'mute') sound.toggleMute();
 };
 
@@ -72,4 +90,4 @@ function frame() {
 }
 requestAnimationFrame(frame);
 
-installApi({ sim, view, input, loop, errors, stepSim, renderFrame, hud, sound, CFG });
+installApi({ sim, view, input, loop, errors, stepSim, renderFrame, hud, sound, CFG, menu, applySettings });

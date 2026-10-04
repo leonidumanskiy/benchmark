@@ -14,7 +14,13 @@ export async function startServer(dir, port) {
 }
 
 export async function launch({ headless = true, width = 1280, height = 720 } = {}) {
-  const browser = await chromium.launch({
+  // Windows + system Chrome uses the real GPU (ANGLE/D3D11); elsewhere fall back to a bundled Chromium
+  // (CHROME_PATH or the Playwright cache) with SwiftShader WebGL.
+  const exe = process.env.CHROME_PATH || (process.platform !== 'win32' && fs.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  const browser = await chromium.launch(exe ? {
+    executablePath: exe, headless,
+    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+  } : {
     channel: 'chrome', headless,
     args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist', '--enable-unsafe-swiftshader'],
   });

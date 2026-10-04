@@ -4,6 +4,9 @@ import type { GameView } from './render/view';
 import type { InputController } from './input';
 import type { Hud } from './ui/hud';
 import type { SoundSystem } from './audio/sound';
+import type { PauseMenu } from './ui/menu';
+import type { Settings } from './settings';
+import { hdReady } from './assets/hd/hd';
 import { computeVisibility } from './sim/visibility';
 import { AIM_PLANE_Y, zoom, VIEW_HALF_HEIGHT } from './render/iso';
 import { renderTurntable } from './render/turntable';
@@ -13,12 +16,13 @@ import { buildMonster, MONSTER_SPEC } from './assets/monster';
 import { deepMerge } from './util';
 import * as THREE from 'three';
 
-export const BUILD_STAGE = '06-audio';
+export const BUILD_STAGE = '07-hd-assets';
 
 interface Ctx {
   sim: Sim; view: GameView; input: InputController; hud: Hud; sound: SoundSystem;
   loop: { paused: boolean; fps: number; timeScale: number };
   errors: string[]; stepSim: (n: number) => void; renderFrame: (dt: number) => void; CFG: unknown;
+  menu: PauseMenu; applySettings: (s: Settings) => Promise<void>;
 }
 
 export function installApi(c: Ctx) {
@@ -60,6 +64,18 @@ export function installApi(c: Ctx) {
       /** peak output level since the previous call (0 = silence) */
       peak: () => c.sound.takePeak(),
     },
+    /** visual settings (same path as the pause menu): set({player:'hd', camera:'persp', ...}) resolves once HD assets are in */
+    settings: {
+      get: () => ({ ...view.settings }),
+      set: async (patch: Partial<Settings>) => { await c.applySettings({ ...view.settings, ...patch }); c.renderFrame(0); return { ...view.settings }; },
+      menu: (open?: boolean) => { if (open !== undefined) { loop.paused = open; c.menu.show(open); } return c.menu.open; },
+      info: () => ({
+        settings: { ...view.settings }, camera: view.camera.type, fov: (view.camera as THREE.PerspectiveCamera).fov ?? null,
+        playerSkin: view.player.rig.skin, monsterSkins: [...view.monsters.values()].map((v) => v.rig.skin),
+        envHd: !!view.envHd?.visible, hdError: view.hdError,
+        hd: Object.fromEntries((['player', 'monster', 'envkit'] as const).map((k) => [k, hdReady(k) ? { tris: hdReady(k)!.tris, parts: hdReady(k)!.parts.size } : null])),
+      }),
+    },
     coverage: () => view.coverage(),
     monsterMask: (w?: number) => view.monsterMask(w),
     /** current animation state of every actor (render-side, derived from sim state) */
@@ -88,7 +104,8 @@ export function installApi(c: Ctx) {
       hash: () => sim.hash(),
       /** 8-angle contact sheet (PNG data URL) of the player or monster built from the shared spec (+ optional overrides). */
       turntable: (kind: 'player' | 'monster', override?: unknown, opts: Record<string, unknown> = {}) => {
-        const rig = kind === 'player' ? buildPlayer(deepMerge(PLAYER_SPEC, override)) : buildMonster(deepMerge(MONSTER_SPEC, override));
+        const skin = kind === 'player' ? view.settings.player : view.settings.monster;
+        const rig = kind === 'player' ? buildPlayer({ skin, ...deepMerge(PLAYER_SPEC, override) }) : buildMonster({ skin, ...deepMerge(MONSTER_SPEC, override) });
         const url = renderTurntable(view.renderer, rig.root, { closeHalf: kind === 'player' ? 1.15 : 1.6, center: kind === 'player' ? 0.95 : 0.8, ...opts });
         c.renderFrame(0);
         return url;

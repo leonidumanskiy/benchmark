@@ -27,3 +27,20 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #07090c; fon
 #reticle.hit i:nth-child(1) { transform: translateY(-3px); } #reticle.hit i:nth-child(2) { transform: translateY(3px); }
 #reticle.hit i:nth-child(3) { transform: translateX(-3px); } #reticle.hit i:nth-child(4) { transform: translateX(3px); }
 #reticle.kill i { background: #ff4a3a; box-shadow: 0 0 10px #ff2a1a; }
+#pause-menu { position: fixed; inset: 0; display: none; pointer-events: auto; background: linear-gradient(90deg, rgba(4,6,9,0) 40%, rgba(4,6,9,.82) 72%); z-index: 20; cursor: default; }
+#pause-menu.show { display: block; }
+body.menu-open #reticle { display: none; }
+body.menu-open #game { cursor: default; }
+.pm-panel { position: absolute; right: 36px; top: 50%; transform: translateY(-50%); width: 380px; padding: 22px 24px; background: rgba(10,14,20,.88); border: 1px solid rgba(120,190,255,.25); box-shadow: 0 0 40px rgba(0,0,0,.6); }
+.pm-title { font-size: 28px; font-weight: 800; letter-spacing: .35em; color: #e8f6ff; text-shadow: 0 0 16px rgba(80,180,255,.6); }
+.pm-sub { font-size: 11px; letter-spacing: .3em; color: #7f98ab; margin: 6px 0 18px; }
+.pm-row { margin-bottom: 14px; }
+.pm-row.disabled { opacity: .35; }
+.pm-label { font-size: 11px; letter-spacing: .18em; color: #9fb4c6; margin-bottom: 6px; text-transform: uppercase; }
+.pm-seg { display: flex; gap: 4px; }
+.pm-seg button, .pm-resume { flex: 1; font: 600 12px/1 'Segoe UI', system-ui, sans-serif; letter-spacing: .08em; padding: 9px 6px; color: #b8cad8; background: rgba(255,255,255,.04); border: 1px solid rgba(140,200,255,.2); cursor: pointer; }
+.pm-seg button:hover, .pm-resume:hover { background: rgba(120,200,255,.12); }
+.pm-seg button.on { color: #061018; background: linear-gradient(90deg, #39d0ff, #8ff7ff); border-color: #8ff7ff; box-shadow: 0 0 10px rgba(57,208,255,.5); }
+.pm-status { min-height: 16px; font: 11px/1.4 Consolas, monospace; color: #7fe3c8; margin: 4px 0 12px; white-space: pre-wrap; }
+.pm-resume { width: 100%; padding: 12px; font-size: 14px; letter-spacing: .3em; color: #e8f6ff; }
+.pm-keys { font-size: 10px; color: #5d7182; margin-top: 10px; letter-spacing: .06em; }

@@ -2,11 +2,14 @@
 import * as THREE from 'three';
 import { Kit, G, joint, solveTwoBone } from './kit';
 import { chitinMaterials } from './materials';
+import { hdReady, dressRig, applyPalette } from './hd/hd';
 
 export interface MonsterSpec {
   palette: { shell: string; shellDark: string; flesh: string; glow: string; spike: string; eye: string };
   dorsalSpikes: number;
   scale: number;
+  /** 'classic' = procedural primitives, 'hd' = Blender-built GLB parts on the same rig */
+  skin?: 'classic' | 'hd';
 }
 
 export const MONSTER_SPEC: MonsterSpec = {
@@ -14,6 +17,19 @@ export const MONSTER_SPEC: MonsterSpec = {
   dorsalSpikes: 5,
   scale: 0.92,
 };
+
+/** Joint layout (model space). The HD pipeline (assets-src/specs/monster.json "rig") must match: tests/assets.test.ts. */
+export const MONSTER_RIG = {
+  bodyY: 0.92, bodyPitch: -0.16, abdomen: [0, 0, -0.36], abdomenPitch: 0.35, neck: [0, 0, 0.5], head: [0, -0.02, 0.22], headPitch: 0.22, headScale: 1.3,
+  jaw: [0.11, -0.1, 0.22], tail: [0, 0, -0.5],
+  legs: [
+    { name: 'midL', side: 1, hip: [0.26, -0.05, 0.12], foot: [0.95, 0, 0.55], a: 0.66, b: 0.92 },
+    { name: 'midR', side: -1, hip: [-0.26, -0.05, 0.12], foot: [-0.95, 0, 0.55], a: 0.66, b: 0.92 },
+    { name: 'rearL', side: 1, hip: [0.24, -0.05, -0.22], foot: [0.9, 0, -0.75], a: 0.7, b: 0.95 },
+    { name: 'rearR', side: -1, hip: [-0.24, -0.05, -0.22], foot: [-0.9, 0, -0.75], a: 0.7, b: 0.95 },
+  ],
+  arms: { hip: [0.22, 0.08, 0.42], a: 0.5, b: 0.72 },
+} as const;
 
 export interface LegChain { hip: THREE.Group; upper: THREE.Group; lower: THREE.Group; a: number; b: number; rest: THREE.Vector3; pole: THREE.Vector3; side: number }
 
@@ -28,24 +44,26 @@ export interface MonsterRig {
   solveArms(targets?: THREE.Vector3[]): void;
   mats: ReturnType<typeof chitinMaterials>;
   spec: MonsterSpec;
+  skin: 'classic' | 'hd';
 }
 
 export function buildMonster(spec: MonsterSpec = MONSTER_SPEC, mats = chitinMaterials(spec.palette)): MonsterRig {
   const k = new Kit(mats as unknown as Record<string, THREE.Material>);
   const root = new THREE.Group(); root.name = 'monster';
   const model = joint('model', root); model.rotation.y = Math.PI / 2; model.scale.setScalar(spec.scale);
-  const bodyY = 0.92;
+  const R = MONSTER_RIG;
+  const bodyY = R.bodyY;
   const j: Record<string, THREE.Group> = {};
   j.body = joint('body', model, [0, bodyY, 0]);
-  j.body.rotation.x = -0.16; // aggressive stance: chest raised
-  j.abdomen = joint('abdomen', j.body, [0, 0.0, -0.36]);
-  j.neck = joint('neck', j.body, [0, 0.0, 0.5]);
-  j.head = joint('head', j.neck, [0, -0.02, 0.22]);
-  j.head.rotation.x = 0.22;
-  j.head.scale.setScalar(1.3);
-  j.jawL = joint('jawL', j.head, [0.11, -0.1, 0.22]);
-  j.jawR = joint('jawR', j.head, [-0.11, -0.1, 0.22]);
-  j.tail = joint('tail', j.abdomen, [0, 0.0, -0.5]);
+  j.body.rotation.x = R.bodyPitch; // aggressive stance: chest raised
+  j.abdomen = joint('abdomen', j.body, [...R.abdomen]);
+  j.neck = joint('neck', j.body, [...R.neck]);
+  j.head = joint('head', j.neck, [...R.head]);
+  j.head.rotation.x = R.headPitch;
+  j.head.scale.setScalar(R.headScale);
+  j.jawL = joint('jawL', j.head, [R.jaw[0], R.jaw[1], R.jaw[2]]);
+  j.jawR = joint('jawR', j.head, [-R.jaw[0], R.jaw[1], R.jaw[2]]);
+  j.tail = joint('tail', j.abdomen, [...R.tail]);
 
   // ---------------------------------------------------------------- thorax (short, hunched, armoured)
   k.add(j.body, G.sph(0.5, 9, 6), 'shellDark', [0, -0.02, 0.02], [0, 0, 0], [0.66, 0.56, 0.78]);
@@ -67,7 +85,7 @@ export function buildMonster(spec: MonsterSpec = MONSTER_SPEC, mats = chitinMate
   }
 
   // ---------------------------------------------------------------- abdomen (compact, armoured, glowing sacs)
-  j.abdomen.rotation.x = 0.35; // hangs down behind
+  j.abdomen.rotation.x = R.abdomenPitch; // hangs down behind
   k.add(j.abdomen, G.sph(0.3, 9, 6), 'flesh', [0, -0.04, -0.16], [0, 0, 0], [0.75, 0.62, 0.95]);
   for (let i = 0; i < 3; i++) k.add(j.abdomen, G.sph(0.3, 9, 6, 0, Math.PI * 2, 0, Math.PI / 2.2), 'shell', [0, 0.06 - i * 0.03, -0.06 - i * 0.17], [-0.2 - i * 0.18, 0, 0], [0.95 - i * 0.12, 0.6, 0.6]);
   for (const x of [-1, 1]) for (let i = 0; i < 3; i++) k.add(j.abdomen, G.sph(0.04, 8, 6), 'glow', [0.22 * x, -0.06 - i * 0.02, -0.1 - i * 0.13]);
@@ -93,12 +111,8 @@ export function buildMonster(spec: MonsterSpec = MONSTER_SPEC, mats = chitinMate
 
   // ---------------------------------------------------------------- legs (4 walking) + arms (2 scythes)
   const legs: LegChain[] = [];
-  const legDefs = [
-    { name: 'midL', side: 1, hip: [0.26, -0.05, 0.12], foot: [0.95, 0, 0.55], a: 0.66, b: 0.92 },
-    { name: 'midR', side: -1, hip: [-0.26, -0.05, 0.12], foot: [-0.95, 0, 0.55], a: 0.66, b: 0.92 },
-    { name: 'rearL', side: 1, hip: [0.24, -0.05, -0.22], foot: [0.9, 0, -0.75], a: 0.7, b: 0.95 },
-    { name: 'rearR', side: -1, hip: [-0.24, -0.05, -0.22], foot: [-0.9, 0, -0.75], a: 0.7, b: 0.95 },
-  ];
+  const legDefs = MONSTER_RIG.legs;
+
   for (const d of legDefs) {
     const hip = joint(d.name + 'Hip', j.body, d.hip as [number, number, number]);
     const upper = joint(d.name + 'Upper', hip);
@@ -117,9 +131,9 @@ export function buildMonster(spec: MonsterSpec = MONSTER_SPEC, mats = chitinMate
   }
   const arms: LegChain[] = [];
   for (const side of [1, -1]) {
-    const hip = joint(side > 0 ? 'armL' : 'armR', j.body, [0.22 * side, 0.08, 0.42]);
+    const hip = joint(side > 0 ? 'armL' : 'armR', j.body, [R.arms.hip[0] * side, R.arms.hip[1], R.arms.hip[2]]);
     const upper = joint('armUpper', hip);
-    const a = 0.5, b = 0.72;
+    const { a, b } = R.arms;
     const lower = joint('armBlade', upper, [0, -a, 0]);
     k.add(upper, G.cyl(0.07, 0.05, a, 8), 'shellDark', [0, -a / 2, 0]);
     k.add(upper, G.box(0.12, a * 0.7, 0.1, 0.035), 'shell', [0, -a * 0.45, 0.02]);
@@ -131,10 +145,24 @@ export function buildMonster(spec: MonsterSpec = MONSTER_SPEC, mats = chitinMate
     arms.push({ hip, upper, lower, a, b, rest: new THREE.Vector3(0.42 * side, 0.5, 1.45), pole: new THREE.Vector3(0.7 * side, 2.6, 0.4), side });
   }
 
-  k.build();
+  const hd = spec.skin === 'hd' ? hdReady('monster') : null;
+  let skin: 'classic' | 'hd' = 'classic';
+  if (hd) {
+    const jm: Record<string, THREE.Object3D> = { ...j };
+    legDefs.forEach((d, i) => { jm[d.name + 'Hip'] = legs[i].hip; jm[d.name + 'Upper'] = legs[i].upper; jm[d.name + 'Lower'] = legs[i].lower; });
+    arms.forEach((A, i) => { const s = i === 0 ? 'L' : 'R'; jm['arm' + s] = A.hip; jm['arm' + s + 'Upper'] = A.upper; jm['arm' + s + 'Blade'] = A.lower; });
+    const dressed = dressRig(hd, jm, { cloneMats: true });
+    const pal: Record<string, string> = {};
+    for (const [key, v] of Object.entries(spec.palette)) if ((MONSTER_SPEC.palette as Record<string, string>)[key] !== v) pal[key] = v;
+    applyPalette(dressed.mats, 'monster', pal);
+    // animation code drives these slots (hit flash, glow fade on death); keep classic ones as fallback
+    const mm = mats as unknown as Record<string, THREE.Material>;
+    for (const key of Object.keys(mm)) { const h = dressed.mats.get(key); if (h) { mm[key].dispose(); mm[key] = h; } }
+    skin = 'hd';
+  } else k.build();
 
   const rig: MonsterRig = {
-    root, model, j, legs, arms, bodyRestY: bodyY, mats, spec,
+    root, model, j, legs, arms, bodyRestY: bodyY, mats, spec, skin,
     solveLegs(targets?: THREE.Vector3[]) {
       root.updateMatrixWorld(true);
       legs.forEach((L, i) => {

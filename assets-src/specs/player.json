@@ -1,0 +1,43 @@
+{
+  "name": "player_hd",
+  "seed": 7,
+  "atlas": 2048,
+  "samples": 16,
+  "rig": {
+    "note": "Must match the joint layout built by src/assets/player.ts (checked by tests/assets.test.ts).",
+    "hipY": 0.96,
+    "thigh": 0.44,
+    "shin": 0.44,
+    "upper": 0.29,
+    "lower": 0.285,
+    "hipX": 0.12,
+    "shoulder": [0.25, 0.15, -0.01],
+    "spine": 0.1,
+    "chest": 0.24,
+    "neck": [0, 0.24, 0],
+    "head": [0, 0.07, 0.02],
+    "gun": [-0.1, 0.24, 0.2],
+    "muzzle": [0, 0, 0.9],
+    "gripR": [0, -0.1, 0.02],
+    "gripL": [0, -0.09, 0.35]
+  },
+  "proportions": {"bulk": 1.0, "pauldron": 1.0, "helmet": 1.0, "boot": 1.0},
+  "decal": {"number": 6},
+  "slots": {
+    "armor": {"color": "#5b616b", "rough": 0.38, "metal": 0.55, "wear": 0.55, "grime": 0.45, "aoStrength": 0.8},
+    "armorDark": {"color": "#272a30", "rough": 0.45, "metal": 0.5, "wear": 0.45, "grime": 0.4},
+    "accent": {"color": "#a51d17", "rough": 0.4, "metal": 0.15, "wear": 0.7, "grime": 0.35, "metalColor": "#b0b0b0"},
+    "suit": {"color": "#1b1c20", "rough": 0.88, "metal": 0.0, "wear": 0.05, "grime": 0.5, "micro": 0.5, "microScale": 220, "edgeR": 0.006},
+    "rubber": {"color": "#121214", "rough": 0.75, "metal": 0.0, "wear": 0.15, "grime": 0.6},
+    "webbing": {"color": "#3a3328", "rough": 0.85, "metal": 0.0, "wear": 0.2, "grime": 0.5, "micro": 0.4, "microScale": 160},
+    "gun": {"color": "#34383f", "rough": 0.32, "metal": 0.75, "wear": 0.5, "grime": 0.35},
+    "gunDark": {"color": "#141519", "rough": 0.4, "metal": 0.7, "wear": 0.35, "grime": 0.3},
+    "vent": {"color": "#1c1e22", "rough": 0.5, "metal": 0.6, "wear": 0.2, "pattern": "grille", "cell": 0.018},
+    "decal": {"color": "#d9d6cc", "rough": 0.45, "metal": 0.1, "wear": 0.6, "grime": 0.4},
+    "hazard": {"color": "#c8901c", "rough": 0.5, "metal": 0.15, "wear": 0.6, "pattern": "hazard", "stripe": 0.035, "color2": "#121212"},
+    "visor": {"color": "#ffa53a", "emissive": 2.6, "rough": 0.2},
+    "gunGlow": {"color": "#ff3b2a", "emissive": 3.0, "rough": 0.3},
+    "lights": {"color": "#ff3b2a", "emissive": 3.2, "rough": 0.3},
+    "lens": {"color": "#59e6ff", "emissive": 2.5, "rough": 0.2}
+  }
+}

@@ -271,7 +271,7 @@ export class MonsterView {
   }
 
   dispose() {
-    this.rig.root.traverse((o) => { const me = o as THREE.Mesh; if (me.isMesh) { me.geometry.dispose(); } });
+    this.rig.root.traverse((o) => { const me = o as THREE.Mesh; if (me.isMesh && !me.userData.hd) { me.geometry.dispose(); } }); // HD geometry is shared by all instances
     Object.values(this.rig.mats).forEach((m) => m.dispose());
   }
 }

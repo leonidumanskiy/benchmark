@@ -27,3 +27,4 @@ desktop.ini
 # Env / local
 .env
 .env.*
+.tools/

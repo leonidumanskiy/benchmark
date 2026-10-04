@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { Kit, G, joint, solveTwoBone } from './kit';
 import { withPanels, glow } from './materials';
+import { hdReady, dressRig, applyPalette } from './hd/hd';
 
 export interface PlayerSpec {
   palette: { armor: string; armorDark: string; accent: string; suit: string; visor: string; gunGlow: string; leather: string; lights: string };
@@ -13,6 +14,8 @@ export interface PlayerSpec {
     kneePads: boolean;
   };
   scale: number;
+  /** 'classic' = procedural primitives, 'hd' = Blender-built GLB parts on the same rig (falls back to classic until loaded) */
+  skin?: 'classic' | 'hd';
 }
 
 /** Shared description of the player. Editing this changes the character consistently from every angle. */
@@ -21,6 +24,12 @@ export const PLAYER_SPEC: PlayerSpec = {
   equipment: { backpack: 'reactor', antenna: true, pauldron: 'heavy', shoulderLamp: true, kneePads: true },
   scale: 1,
 };
+
+/** Joint layout (model space, metres). The HD pipeline (assets-src/specs/player.json "rig") must match: tests/assets.test.ts. */
+export const PLAYER_RIG = {
+  hipY: 0.96, thigh: 0.44, shin: 0.44, upper: 0.29, lower: 0.285, hipX: 0.12, shoulder: [0.25, 0.15, -0.01], spine: 0.1, chest: 0.24,
+  neck: [0, 0.24, 0], head: [0, 0.07, 0.02], gun: [-0.1, 0.24, 0.2], muzzle: [0, 0, 0.9], gripR: [0, -0.1, 0.02], gripL: [0, -0.09, 0.35],
+} as const;
 
 export interface PlayerRig {
   root: THREE.Group; // sim-facing root (+X forward after internal rotation)
@@ -34,6 +43,7 @@ export interface PlayerRig {
   /** re-solve leg IK for given foot targets in hips-parent (model) space */
   solveLegs(footL: THREE.Vector3, footR: THREE.Vector3): void;
   spec: PlayerSpec;
+  skin: 'classic' | 'hd';
 }
 
 export function buildPlayer(spec: PlayerSpec = PLAYER_SPEC): PlayerRig {
@@ -56,22 +66,23 @@ export function buildPlayer(spec: PlayerSpec = PLAYER_SPEC): PlayerRig {
   const model = joint('model', root); model.rotation.y = Math.PI / 2; // +Z (model) -> +X (sim facing)
   model.scale.setScalar(spec.scale);
 
-  const hipY = 0.96, thigh = 0.44, shin = 0.44;
+  const { hipY, thigh, shin } = PLAYER_RIG;
   const j: Record<string, THREE.Group> = {};
   j.hips = joint('hips', model, [0, hipY, 0]);
-  j.spine = joint('spine', j.hips, [0, 0.1, 0]);
-  j.chest = joint('chest', j.spine, [0, 0.24, 0]);
-  j.neck = joint('neck', j.chest, [0, 0.24, 0.0]);
-  j.head = joint('head', j.neck, [0, 0.07, 0.02]);
+  j.spine = joint('spine', j.hips, [0, PLAYER_RIG.spine, 0]);
+  j.chest = joint('chest', j.spine, [0, PLAYER_RIG.chest, 0]);
+  j.neck = joint('neck', j.chest, [...PLAYER_RIG.neck]);
+  j.head = joint('head', j.neck, [...PLAYER_RIG.head]);
   for (const [s, x] of [['L', 1], ['R', -1]] as const) {
-    j['thigh' + s] = joint('thigh' + s, j.hips, [0.12 * x, -0.04, 0]);
+    j['thigh' + s] = joint('thigh' + s, j.hips, [PLAYER_RIG.hipX * x, -0.04, 0]);
     j['shin' + s] = joint('shin' + s, j['thigh' + s], [0, -thigh, 0]);
     j['foot' + s] = joint('foot' + s, j['shin' + s], [0, -shin, 0]);
-    j['upper' + s] = joint('upper' + s, j.chest, [0.25 * x, 0.15, -0.01]);
-    j['fore' + s] = joint('fore' + s, j['upper' + s], [0, -0.29, 0]);
-    j['hand' + s] = joint('hand' + s, j['fore' + s], [0, -0.285, 0]);
+    const [sx, sy, sz] = PLAYER_RIG.shoulder;
+    j['upper' + s] = joint('upper' + s, j.chest, [sx * x, sy, sz]);
+    j['fore' + s] = joint('fore' + s, j['upper' + s], [0, -PLAYER_RIG.upper, 0]);
+    j['hand' + s] = joint('hand' + s, j['fore' + s], [0, -PLAYER_RIG.lower, 0]);
   }
-  const upper = 0.29, lower = 0.285;
+  const { upper, lower } = PLAYER_RIG;
   /** bladed rifle stance: chest yawed so the support shoulder leads; head/neck counter-rotate */
   const STANCE_YAW = -0.55;
   j.chest.rotation.y = STANCE_YAW; j.neck.rotation.y = -STANCE_YAW * 0.8;
@@ -178,7 +189,7 @@ export function buildPlayer(spec: PlayerSpec = PLAYER_SPEC): PlayerRig {
   }
 
   // ---------------------------------------------------------------- rifle (child of chest; arms solve to its grips)
-  const gun = joint('gun', j.spine, [-0.1, 0.24, 0.2]); // on the spine: chest twist doesn't steer the barrel
+  const gun = joint('gun', j.spine, [...PLAYER_RIG.gun]); // on the spine: chest twist doesn't steer the barrel
   const gk = new Kit(mats);
   gk.add(gun, G.box(0.08, 0.12, 0.42, 0.015), 'gun', [0, 0, 0.12]); // receiver
   gk.add(gun, G.box(0.085, 0.05, 0.3, 0.012), 'gunDark', [0, 0.075, 0.1]); // top rail
@@ -194,16 +205,28 @@ export function buildPlayer(spec: PlayerSpec = PLAYER_SPEC): PlayerRig {
   gk.add(gun, G.cyl(0.03, 0.03, 0.16, 10), 'gunDark', [0, 0.13, 0.1], [Math.PI / 2, 0, 0]); // scope
   gk.add(gun, G.cyl(0.024, 0.024, 0.005, 10), 'lens', [0, 0.13, 0.182], [Math.PI / 2, 0, 0]);
   gk.add(gun, G.box(0.02, 0.06, 0.05, 0.005), 'gunDark', [0, -0.08, 0.36]); // fore grip
-  gk.build();
-  const muzzle = joint('muzzle', gun, [0, 0, 0.9]);
-  const gripR = joint('gripR', gun, [-0.0, -0.1, 0.02]);
-  const gripL = joint('gripL', gun, [0.0, -0.09, 0.35]);
+  const hd = spec.skin === 'hd' ? hdReady('player') : null;
+  if (!hd) gk.build();
+  const muzzle = joint('muzzle', gun, [...PLAYER_RIG.muzzle]);
+  const gripR = joint('gripR', gun, [...PLAYER_RIG.gripR]);
+  const gripL = joint('gripL', gun, [...PLAYER_RIG.gripL]);
 
-  k.build();
+  let skin: 'classic' | 'hd' = 'classic';
+  if (hd) {
+    const variant = (tag: string) => ({
+      pack: E.backpack === 'pack', reactor: E.backpack === 'reactor', antenna: E.antenna, lamp: E.shoulderLamp,
+      pauldron_heavy: E.pauldron === 'heavy', pauldron_light: E.pauldron === 'light', knee: E.kneePads,
+    } as Record<string, boolean>)[tag] ?? true;
+    const dressed = dressRig(hd, { ...j, gun }, { variant });
+    const pal: Record<string, string> = { ...spec.palette };
+    if (pal.leather) { pal.webbing = pal.leather; delete pal.leather; }
+    applyPalette(dressed.mats, 'player', diffPalette(pal, PLAYER_SPEC.palette));
+    skin = 'hd';
+  } else k.build();
 
   const tmp = new THREE.Vector3();
   const rig: PlayerRig = {
-    root, model, j, gun, muzzle, gripR, gripL, spec,
+    root, model, j, gun, muzzle, gripR, gripL, spec, skin,
     dims: { upper, lower, thigh, shin, hipY, stanceYaw: STANCE_YAW },
     solveArms() {
       // targets in chest space
@@ -232,4 +255,11 @@ export function buildPlayer(spec: PlayerSpec = PLAYER_SPEC): PlayerRig {
   rig.solveArms();
   root.traverse((o) => { if ((o as THREE.Mesh).isMesh) o.userData.part = 'player'; });
   return rig;
+}
+
+/** palette entries that differ from the default (only those are re-tinted on the baked HD set) */
+function diffPalette(p: Record<string, string>, base: Record<string, string>) {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(p)) if ((base as Record<string, string>)[k === 'webbing' ? 'leather' : k] !== v) out[k] = v;
+  return out;
 }

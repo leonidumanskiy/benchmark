@@ -3,7 +3,10 @@ import * as THREE from 'three';
 import { Sim, Shot, GameEvent } from '../sim/sim';
 import { CFG } from '../sim/config';
 import { sectorPolygon } from '../sim/visibility';
-import { makeIsoCamera, resizeIsoCamera, CAM_OFFSET, AIM_PLANE_Y, zoom } from './iso';
+import { makeIsoCamera, makePerspCamera, fitPersp, cameraOffset, resizeIsoCamera, GameCamera, AIM_PLANE_Y, zoom } from './iso';
+import { Settings, DEFAULT_SETTINGS } from '../settings';
+import { loadHd, hdReady } from '../assets/hd/hd';
+import { buildEnvironmentHd } from '../assets/hd/envkit';
 import { FX } from './fx';
 import { Lighting } from './lighting';
 import { Post } from './post';
@@ -17,7 +20,15 @@ import { buildObstacle, buildDecor, buildGround, buildBackdrop, LampAnchor } fro
 export class GameView {
   readonly renderer: THREE.WebGLRenderer;
   readonly scene = new THREE.Scene();
-  readonly camera: THREE.OrthographicCamera;
+  camera: GameCamera;
+  readonly isoCamera: THREE.OrthographicCamera;
+  readonly perspCamera: THREE.PerspectiveCamera;
+  settings: Settings = { ...DEFAULT_SETTINGS };
+  /** classic obstacle visuals (one group per obstacle) and the HD environment kit (built on first use) */
+  envClassic: THREE.Object3D[] = [];
+  envHd: THREE.Group | null = null;
+  /** last HD load failure (shown in the pause menu) */
+  hdError = '';
   readonly camTarget = new THREE.Vector3();
   debug = false;
   /** camera focus override (evidence/debug); null = follow player */
@@ -42,14 +53,16 @@ export class GameView {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.camera = makeIsoCamera(window.innerWidth / window.innerHeight);
+    this.isoCamera = makeIsoCamera(window.innerWidth / window.innerHeight);
+    this.perspCamera = makePerspCamera(window.innerWidth / window.innerHeight, DEFAULT_SETTINGS.focal);
+    this.camera = this.isoCamera;
     this.scene.background = new THREE.Color(0x101418);
 
     // simple test lighting
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.15;
     this.scene.add(buildGround());
-    for (const ob of sim.obstacles) { const m = buildObstacle(ob, this.lamps); m.userData.obstacle = ob.id; this.scene.add(m); }
+    for (const ob of sim.obstacles) { const m = buildObstacle(ob, this.lamps); m.userData.obstacle = ob.id; this.scene.add(m); this.envClassic.push(m); }
     this.scene.add(buildDecor(sim.decor, sim.spawns, sim.obstacles));
     this.scene.add(buildBackdrop(this.lamps));
 
@@ -77,7 +90,8 @@ export class GameView {
     const w = window.innerWidth, h = window.innerHeight;
     this.renderer.setSize(w, h, false);
     this.post?.setSize(w, h);
-    resizeIsoCamera(this.camera, w / h);
+    resizeIsoCamera(this.isoCamera, w / h);
+    fitPersp(this.perspCamera, w / h, this.settings.focal);
   }
 
   // ------------------------------------------------------------- coordinate helpers
@@ -86,7 +100,7 @@ export class GameView {
     const k = snap || this.focus ? 1 : 0.15;
     this.camTarget.x += (p.x - this.camTarget.x) * k;
     this.camTarget.z += (p.z - this.camTarget.z) * k;
-    this.camera.position.copy(this.camTarget).add(CAM_OFFSET);
+    this.camera.position.copy(this.camTarget).add(cameraOffset(this.camera));
     this.camera.lookAt(this.camTarget);
     this.camera.updateMatrixWorld();
   }
@@ -162,16 +176,67 @@ export class GameView {
   /** Rebuild actor visuals from the shared spec with overrides (gameplay untouched). */
   respec(kind: 'player' | 'monster', override: unknown) {
     if (kind === 'player') {
-      this.playerSpec = deepMerge(PLAYER_SPEC, override);
+      this.playerSpec = { ...deepMerge(PLAYER_SPEC, override), skin: this.settings.player };
       this.scene.remove(this.player.rig.root);
       this.player = new PlayerView(this.playerSpec);
       this.scene.add(this.player.rig.root);
     } else {
-      this.monsterSpec = deepMerge(MONSTER_SPEC, override);
+      this.monsterSpec = { ...deepMerge(MONSTER_SPEC, override), skin: this.settings.monster };
       for (const [, v] of this.monsters) { this.scene.remove(v.rig.root); v.dispose(); }
       this.monsters.clear();
     }
     return kind === 'player' ? this.playerSpec : this.monsterSpec;
+  }
+
+  /** Apply visual settings. HD assets load asynchronously; until they arrive the classic visuals stay up. */
+  applySettings(next: Settings): Promise<void> {
+    const prev = this.settings;
+    this.settings = { ...next };
+    // camera
+    const cam = next.camera === 'persp' ? this.perspCamera : this.isoCamera;
+    if (cam !== this.camera || next.focal !== prev.focal) {
+      this.camera = cam; this.post.setCamera(cam); this.resize(); this.updateCamera(true);
+    }
+    const jobs: Promise<unknown>[] = [];
+    const want = (kind: 'player' | 'monster' | 'envkit', on: boolean, apply: () => void) => {
+      if (!on || hdReady(kind)) { apply(); return; }
+      jobs.push(loadHd(kind).then(() => { if (this.settings === next || JSON.stringify(this.settings) === JSON.stringify(next)) apply(); })
+        .catch((e) => { this.hdError = `${kind}: ${e?.message ?? e}`; console.warn('HD asset load failed', e); }));
+    };
+    if (next.player !== prev.player || next.player !== this.player.rig.skin) want('player', next.player === 'hd', () => this.rebuildPlayer());
+    if (next.monster !== prev.monster || (this.monsterSpec.skin ?? 'classic') !== next.monster) want('monster', next.monster === 'hd', () => this.rebuildMonsters());
+    if (next.env !== prev.env || (next.env === 'hd') !== !!this.envHd?.visible) {
+      if (next.env === 'hd' && !hdReady('floor')) jobs.push(loadHd('floor').catch((e) => { this.hdError = `floor: ${e?.message ?? e}`; }));
+      want('envkit', next.env === 'hd', () => this.setEnv(next.env));
+    }
+    return Promise.all(jobs).then(() => undefined);
+  }
+
+  private rebuildPlayer() {
+    const spec = { ...this.playerSpec, skin: this.settings.player };
+    this.playerSpec = spec;
+    const old = this.player;
+    this.scene.remove(old.rig.root);
+    this.player = new PlayerView(spec);
+    this.scene.add(this.player.rig.root);
+  }
+
+  private rebuildMonsters() {
+    this.monsterSpec = { ...this.monsterSpec, skin: this.settings.monster };
+    for (const [, v] of this.monsters) { this.scene.remove(v.rig.root); v.dispose(); }
+    this.monsters.clear(); // re-created from sim state on the next update
+  }
+
+  private setEnv(mode: 'classic' | 'hd') {
+    if (mode === 'hd' && !this.envHd && hdReady('envkit')) {
+      this.envHd = buildEnvironmentHd(hdReady('envkit')!, hdReady('floor'), this.sim.obstacles, this.sim.spawns, this.lamps);
+      this.scene.add(this.envHd);
+    }
+    const hd = mode === 'hd' && !!this.envHd;
+    if (this.envHd) this.envHd.visible = hd;
+    for (const g of this.envClassic) g.visible = !hd;
+    const ground = this.scene.getObjectByName('ground');
+    if (ground) ground.visible = !(hd && this.envHd!.getObjectByName('floorHd'));
   }
 
   isRendered(id: string) { const v = this.monsters.get(id); return !!v && v.rig.root.visible; }

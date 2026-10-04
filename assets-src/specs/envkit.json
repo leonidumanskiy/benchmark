@@ -1,0 +1,82 @@
+{
+  "name": "envkit_hd",
+  "seed": 23,
+  "atlas": 2048,
+  "samples": 12,
+  "modules": {
+    "note": "Every module: origin at floor centre, length along +X, front face +Z. Nominal sizes (metres) used by src/assets/hd/envkit.ts to fit gameplay footprints.",
+    "wall": [2.0, 2.6, 0.8],
+    "barricade": [1.2, 1.15, 0.9],
+    "gate": [1.4, 1.4, 1.0],
+    "crate": [1.1, 1.0, 1.1],
+    "pylon": [1.1, 3.0, 1.1],
+    "rock": [2.0, 1.4, 2.0]
+  },
+  "slots": {
+    "panel": {
+      "color": "#4b525b",
+      "rough": 0.5,
+      "metal": 0.45,
+      "wear": 0.5,
+      "grime": 0.65,
+      "pattern": "panels",
+      "cell": 0.5,
+      "seam": 0.01,
+      "chipScale": 14,
+      "aoDist": 0.4
+    },
+    "panelDark": {"color": "#262a30", "rough": 0.55, "metal": 0.45, "wear": 0.4, "grime": 0.6, "chipScale": 14, "aoDist": 0.4},
+    "panelRed": {"color": "#6a1a17", "rough": 0.5, "metal": 0.25, "wear": 0.6, "grime": 0.6, "chipScale": 14, "aoDist": 0.4},
+    "trim": {"color": "#1b1d21", "rough": 0.45, "metal": 0.6, "wear": 0.35, "grime": 0.4, "aoDist": 0.3},
+    "pipe": {"color": "#3e434a", "rough": 0.35, "metal": 0.7, "wear": 0.5, "grime": 0.5, "aoDist": 0.3},
+    "rust": {"color": "#5a3b2a", "rough": 0.8, "metal": 0.35, "wear": 0.3, "grime": 0.7, "aoDist": 0.3},
+    "hazard": {
+      "color": "#c08a1a",
+      "rough": 0.55,
+      "metal": 0.15,
+      "wear": 0.7,
+      "grime": 0.6,
+      "pattern": "hazard",
+      "stripe": 0.12,
+      "color2": "#121212",
+      "chipScale": 18
+    },
+    "grate": {"color": "#202328", "rough": 0.45, "metal": 0.7, "wear": 0.3, "grime": 0.5, "pattern": "grille", "cell": 0.05},
+    "concrete": {
+      "color": "#3f3d3a",
+      "rough": 0.92,
+      "metal": 0.0,
+      "wear": 0.08,
+      "grime": 0.75,
+      "micro": 0.6,
+      "microScale": 30,
+      "aoDist": 0.4,
+      "metalColor": "#7d7a74"
+    },
+    "rock": {
+      "color": "#3d3934",
+      "rough": 0.9,
+      "metal": 0.0,
+      "wear": 0.04,
+      "grime": 0.5,
+      "micro": 0.9,
+      "microScale": 12,
+      "bumpStrength": 0.6,
+      "aoDist": 0.5,
+      "metalColor": "#77706a"
+    },
+    "rubber": {"color": "#121315", "rough": 0.7, "metal": 0.0, "wear": 0.1, "grime": 0.5},
+    "floor": {"color": "#3a3f46", "rough": 0.55, "metal": 0.5, "wear": 0.45, "grime": 0.7, "pattern": "rivets", "cell": 0.25, "chipScale": 10, "aoDist": 0.2},
+    "floorGrate": {"color": "#24272c", "rough": 0.5, "metal": 0.65, "wear": 0.3, "grime": 0.6, "pattern": "grille", "cell": 0.06},
+    "lampCyan": {"color": "#39d6ff", "emissive": 3.0},
+    "lampRed": {"color": "#ff2a1a", "emissive": 3.5},
+    "lampAmber": {"color": "#ffa630", "emissive": 3.0},
+    "screen": {"color": "#2fe0c0", "emissive": 1.6}
+  },
+  "floor": {
+    "extent": 8.0,
+    "cells": 4,
+    "size": 2048,
+    "mix": {"plates": 4, "grate": 3, "hatch": 2, "worn": 2, "plain": 5}
+  }
+}

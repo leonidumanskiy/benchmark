@@ -9,7 +9,10 @@
     "test": "vitest run",
     "serve": "node scripts/serve.mjs dist 8080",
     "e2e": "node tests/e2e.mjs",
-    "test:audio": "node tests/audio.mjs"
+    "test:audio": "node tests/audio.mjs",
+    "assets": "node scripts/build-assets.mjs",
+    "assets:fast": "node scripts/build-assets.mjs --fast",
+    "test:hd": "node tests/hd.mjs"
   },
   "dependencies": {
     "three": "0.186.1"
