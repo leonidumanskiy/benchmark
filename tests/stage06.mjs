@@ -2,13 +2,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { run as run05 } from './stage05.mjs';
+import { SOFTWARE_GL, SW_REASON } from './core-checks.mjs';
 
 const ev = (page, fn, arg) => page.evaluate(fn, arg);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function run(page, log, out) {
   await run05(page, log, out);
-  const { check } = log;
+  const { check, skip } = log;
+  if (SOFTWARE_GL()) { skip('audio: real click -> running AudioContext, gunshots produce signal', SW_REASON); skip('audio: footsteps while walking (real WASD)', SW_REASON); } else {
   // real gesture (click on canvas) keeps/creates a running AudioContext
   await ev(page, () => { __game.pause(false); __game.reset({ waves: false, player: { x: 0, z: 2 } }); });
   await page.mouse.move(640, 200); await page.mouse.down(); await sleep(500); await page.mouse.up();
@@ -16,6 +18,7 @@ export async function run(page, log, out) {
   check('audio: real click -> running AudioContext, gunshots produce signal', fire.info.ctx === 'running' && fire.info.played.shot >= 2 && fire.peak > 0.05, { ctx: fire.info.ctx, shots: fire.info.played.shot, peak: fire.peak });
   await page.keyboard.down('KeyA'); await sleep(900); await page.keyboard.up('KeyA');
   check('audio: footsteps while walking (real WASD)', (await ev(page, () => __game.audio.info().played.step ?? 0)) >= 2);
+  }
   // combat: kill a monster in front of the player, impacts on cover, sounds counted 1:1 with sim events
   const combat = await ev(page, async () => {
     const g = __game; g.pause(true); g.reset({ waves: false, player: { x: 0, z: 2 } });

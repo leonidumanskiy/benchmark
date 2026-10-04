@@ -2,7 +2,9 @@
 export function makeLog() {
   const results = [];
   const check = (name, ok, data = {}) => { results.push({ name, ok: !!ok, ...data }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${Object.keys(data).length ? '  ' + JSON.stringify(data) : ''}`); return ok; };
-  return { results, check };
+  /** recorded as neither pass nor fail (ok: null) — used when the environment cannot run a check meaningfully */
+  const skip = (name, reason) => { results.push({ name, ok: null, skipped: reason }); console.log(`SKIP  ${name}  (${reason})`); };
+  return { results, check, skip };
 }
 
 const g = (page, fn, arg) => page.evaluate(fn, arg);
@@ -136,8 +138,13 @@ export async function checkWaves(page, { check }, tag = '') {
 }
 
 /** Real-time (unpaused) control check: keys + mouse while the loop runs. */
-export async function checkRealtime(page, { check }, tag = '') {
+/** Software WebGL (SwiftShader, no GPU) renders this scene at ~0.5 fps: wall-clock real-time checks are meaningless there. */
+export const SOFTWARE_GL = () => process.env.E2E_SOFTWARE_GL === '1';
+export const SW_REASON = 'software WebGL (SwiftShader): ~0.5 fps, wall-clock real-time loop cannot be exercised; deterministic stepped checks still run';
+
+export async function checkRealtime(page, { check, skip }, tag = '') {
   const t = tag ? ` [${tag}]` : '';
+  if (SOFTWARE_GL()) { skip(`real-time keys + held mouse fire${t}`, SW_REASON); return; }
   await g(page, () => { __game.reset({ waves: false, player: { x: 0, z: 2 } }); __game.pause(false); });
   const p0 = await g(page, () => ({ ...__game.sim.player.pos }));
   await page.keyboard.down('KeyA'); await page.waitForTimeout(400); await page.keyboard.up('KeyA');

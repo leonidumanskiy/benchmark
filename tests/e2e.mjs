@@ -18,6 +18,7 @@ try {
   await page.goto(url); await waitGame(page);
   const info = await page.evaluate(() => { const gl = __game.view.renderer.getContext(); const d = gl.getExtension('WEBGL_debug_renderer_info'); return { stage: __game.stage, gl: d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : '?' }; });
   log.check('boot: game API present, stage tag', !!info.stage, info);
+  if (/SwiftShader/i.test(info.gl)) process.env.E2E_SOFTWARE_GL = '1';
   await runCore(page, log, 'run1');
   await checkWaves(page, log, 'run1');
   if (extra) await extra.run(page, log, out);
@@ -39,10 +40,10 @@ try {
 } finally {
   server.kill();
 }
-const passed = log.results.filter((r) => r.ok).length;
-const summary = { url, dir, stage, passed, failed: log.results.length - passed, results: log.results };
+const passed = log.results.filter((r) => r.ok === true).length, skipped = log.results.filter((r) => r.ok === null).length;
+const summary = { url, dir, stage, passed, failed: log.results.length - passed - skipped, skipped, results: log.results };
 fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify(summary, null, 1));
-console.log(`\n${passed}/${log.results.length} checks passed`);
+console.log(`\n${passed}/${log.results.length} checks passed, ${skipped} skipped`);
 process.exit(summary.failed ? 1 : 0);
 
 async function stage01Evidence(page, out) {

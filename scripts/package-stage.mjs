@@ -69,13 +69,13 @@ try {
 
 // ---- 4. finalise
 const vtext = `\n\n## Проверка распакованного архива (автоматически, scripts/package-stage.mjs)\n\n` +
-  `- Архив распакован в отдельную папку \`${unpacked.replaceAll('\\', '/')}\`, запущен его собственный \`serve.mjs\`, прогнан полный набор e2e этапа: **${verify.e2e}** (${checks.passed}/${checks.passed + checks.failed} проверок).\n` +
+  `- Архив распакован в отдельную папку \`${unpacked.replaceAll('\\', '/')}\`, запущен его собственный \`serve.mjs\`, прогнан полный набор e2e этапа: **${verify.e2e}** (${checks.passed}/${checks.passed + checks.failed} проверок пройдено${checks.skipped ? `, ${checks.skipped} пропущено: ${[...new Set(checks.results.filter((r) => r.ok === null).map((r) => r.skipped))].join('; ')}` : ''}).\n` +
   `- \`source.zip\` распакован отдельно → \`npm ci\` → \`npm run build\` → \`npm test\`: **${verify.rebuild}**.\n` +
-  (checks.failed ? `- Непройденные проверки: ${checks.results.filter((r) => !r.ok).map((r) => r.name).join('; ')}\n` : '');
+  (checks.failed ? `- Непройденные проверки: ${checks.results.filter((r) => r.ok === false).map((r) => r.name).join('; ')}\n` : '');
 fs.appendFileSync(path.join(stageDir, 'STAGE.md'), vtext);
 fs.copyFileSync(path.join(vdir, 'verify-evidence', 'checks.json'), path.join(stageDir, 'evidence', 'checks_unpacked_archive.json'));
 fs.mkdirSync(buildsDir, { recursive: true });
 zipDir(work, finalZip, [name]);
-fs.writeFileSync(path.join(buildsDir, `${name}.verify.json`), JSON.stringify({ ...verify, passed: checks.passed, failed: checks.failed }, null, 1));
+fs.writeFileSync(path.join(buildsDir, `${name}.verify.json`), JSON.stringify({ ...verify, passed: checks.passed, failed: checks.failed, skipped: checks.skipped ?? 0 }, null, 1));
 console.log(`\nWROTE ${finalZip}\nverify: ${JSON.stringify(verify)}`);
 process.exit(verify.e2e === 'PASS' && verify.rebuild.startsWith('PASS') ? 0 : 1);

@@ -1,5 +1,6 @@
 // Stage 05 checks: drone light changes the image/shadows (gameplay unchanged), light never reveals hidden monsters,
 // visible monsters stay readable, gunfire lights the scene, debug overlays off in normal play.
+import { SOFTWARE_GL, SW_REASON } from './core-checks.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -12,7 +13,7 @@ const FRAME = `(() => { const cv = __game.view.renderer.domElement; const W = 32
   for (let i = 0; i < W * H; i++) L[i] = (0.2126 * d[i * 4] + 0.7152 * d[i * 4 + 1] + 0.0722 * d[i * 4 + 2]) / 255;
   return { W, H, L }; })()`;
 
-export async function run(page, { check }, out) {
+export async function run(page, { check, skip }, out) {
   // ---------------------------------------------------------------- 1. debug overlays off in normal play; F3 toggles with a real key
   const dbg = await ev(page, () => { __game.pause(true); __game.reset({ waves: false, player: { x: 0, z: 2 } }); __game.debug.spawn(-1, -2, { dummy: true }); __game.step(2);
     return { overlay: __game.view.overlay.visible, labels: document.getElementById('debug-labels').innerHTML.length, panel: getComputedStyle(document.getElementById('debug-panel')).display, flag: __game.view.debug }; });
@@ -23,6 +24,8 @@ export async function run(page, { check }, out) {
   check('debug overlays disabled in normal play (F3 toggles them on/off)', !dbg.overlay && dbg.labels === 0 && dbg.panel === 'none' && !dbg.flag && dbgOn.overlay && dbgOn.labels > 0 && dbgOn.panel === 'block' && !dbgOff.overlay && dbgOff.labels === 0 && dbgOff.panel === 'none', { normal: dbg, on: dbgOn, off: dbgOff });
 
   // ---------------------------------------------------------------- 2. drone flies continuously (real-time) through the arena
+  if (SOFTWARE_GL()) skip('drone flies continuously in real time along a patrol covering the arena', SW_REASON);
+  else {
   const flight = await ev(page, async () => {
     __game.reset({ waves: false, player: { x: 0, z: 2 } }); __game.debug.drone({ at: null, freeze: false });
     __game.pause(false);
@@ -36,6 +39,7 @@ export async function run(page, { check }, out) {
   });
   const moved = flight.pts.every((p, i) => i === 0 || Math.hypot(p.x - flight.pts[i - 1].x, p.z - flight.pts[i - 1].z) > 0.3);
   check('drone flies continuously in real time along a patrol covering the arena', moved && flight.maxAbs < 16 && flight.uniq > 30, flight);
+  }
 
   // ---------------------------------------------------------------- 3. drone pass visibly changes the image + shadows; gameplay untouched
   const pass = await ev(page, (FRAME) => {

@@ -19,7 +19,7 @@ export async function launch({ headless = true, width = 1280, height = 720 } = {
   const exe = process.env.CHROME_PATH || (process.platform !== 'win32' && fs.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
   const browser = await chromium.launch(exe ? {
     executablePath: exe, headless,
-    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--disable-renderer-backgrounding'],
   } : {
     channel: 'chrome', headless,
     args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist', '--enable-unsafe-swiftshader'],
