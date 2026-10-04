@@ -1,0 +1,69 @@
+{
+ "assets": {
+  "player": {
+   "hash": "147c116b70c15a25",
+   "glb": "player.glb",
+   "bytes": 2874376,
+   "seconds": 927,
+   "blender": "Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)",
+   "fast": false,
+   "size": 2048,
+   "parts": 26,
+   "tris": 47592,
+   "spec": "player.json"
+  },
+  "monster": {
+   "hash": "a0b18b58b38773f8",
+   "glb": "monster.glb",
+   "bytes": 2359780,
+   "seconds": 1041,
+   "blender": "Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)",
+   "fast": false,
+   "size": 2048,
+   "parts": 25,
+   "tris": 26424,
+   "spec": "monster.json"
+  },
+  "envkit": {
+   "hash": "2d63eac3c8699194",
+   "glb": "envkit.glb",
+   "bytes": 1822772,
+   "seconds": 362,
+   "blender": "Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)",
+   "fast": false,
+   "size": 2048,
+   "parts": 15,
+   "tris": 21120,
+   "spec": "envkit.json",
+   "modules": [
+    "wall_a",
+    "wall_b",
+    "wall_c",
+    "barricade",
+    "barricade_end",
+    "gate",
+    "crate_a",
+    "crate_b",
+    "pylon",
+    "rock_a",
+    "rock_b",
+    "barrel",
+    "lamp_red",
+    "lamp_cyan",
+    "lamp_amber"
+   ]
+  },
+  "floor": {
+   "hash": "16232261d8c1431a",
+   "glb": "floor.glb",
+   "bytes": 615180,
+   "seconds": 495,
+   "blender": "Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)",
+   "fast": false,
+   "size": 2048,
+   "extent": 8,
+   "highTris": 12812,
+   "spec": "envkit.json"
+  }
+ }
+}

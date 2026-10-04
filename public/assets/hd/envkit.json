@@ -1,0 +1,23 @@
+{
+ "size": 2048,
+ "parts": 15,
+ "tris": 21120,
+ "spec": "envkit.json",
+ "modules": [
+  "wall_a",
+  "wall_b",
+  "wall_c",
+  "barricade",
+  "barricade_end",
+  "gate",
+  "crate_a",
+  "crate_b",
+  "pylon",
+  "rock_a",
+  "rock_b",
+  "barrel",
+  "lamp_red",
+  "lamp_cyan",
+  "lamp_amber"
+ ]
+}
