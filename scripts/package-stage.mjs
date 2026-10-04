@@ -12,7 +12,8 @@ import { execFileSync, execSync } from 'node:child_process';
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const stage = Number(arg('stage')); const name = arg('name');
 const root = process.cwd();
-const TAR = 'C:/Windows/System32/tar.exe'; // bsdtar: writes real .zip with -a
+const WIN = process.platform === 'win32';
+const TAR = 'C:/Windows/System32/tar.exe'; // bsdtar: writes real .zip with -a (Windows); elsewhere zip/unzip
 const buildsDir = path.join(root, 'builds');
 const finalZip = path.join(buildsDir, `${name}.zip`);
 if (fs.existsSync(finalZip)) { console.error(`${finalZip} already exists (archives are immutable; use a -rN name)`); process.exit(2); }
@@ -20,8 +21,9 @@ const work = fs.mkdtempSync(path.join(os.tmpdir(), `pkg-${name}-`));
 const stageDir = path.join(work, name);
 fs.mkdirSync(stageDir, { recursive: true });
 const sh = (cmd, cwd = root) => { console.log(`$ ${cmd}`); return execSync(cmd, { cwd, stdio: 'inherit', shell: true }); };
-const zipDir = (dir, out, entries) => execFileSync(TAR, ['-a', '-c', '-f', out, '-C', dir, ...entries], { stdio: 'inherit' });
-const unzip = (zip, dir) => { fs.mkdirSync(dir, { recursive: true }); execFileSync(TAR, ['-x', '-f', zip, '-C', dir], { stdio: 'inherit' }); };
+const zipDir = (dir, out, entries) => WIN ? execFileSync(TAR, ['-a', '-c', '-f', out, '-C', dir, ...entries], { stdio: 'inherit' })
+  : execFileSync('zip', ['-qr', out, ...entries], { cwd: dir, stdio: 'inherit' });
+const unzip = (zip, dir) => { fs.mkdirSync(dir, { recursive: true }); if (WIN) execFileSync(TAR, ['-x', '-f', zip, '-C', dir], { stdio: 'inherit' }); else execFileSync('unzip', ['-q', zip, '-d', dir], { stdio: 'inherit' }); };
 
 // ---- 1. assemble
 sh('npm run build');
@@ -31,7 +33,7 @@ fs.writeFileSync(path.join(stageDir, 'run.bat'), '@echo off\r\ncd /d "%~dp0"\r\n
 fs.writeFileSync(path.join(stageDir, 'run.sh'), '#!/bin/sh\ncd "$(dirname "$0")"\nnode serve.mjs web 8080\n');
 const runMd = fs.readFileSync(path.join(root, 'stages/RUN.template.md'), 'utf8').replaceAll('{{NAME}}', name).replaceAll('{{STAGE}}', String(stage));
 fs.writeFileSync(path.join(stageDir, 'RUN.md'), runMd);
-const srcEntries = ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', '.gitignore', 'src', 'scripts', 'tests', 'stages'].filter((e) => fs.existsSync(path.join(root, e)));
+const srcEntries = ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', '.gitignore', 'src', 'scripts', 'tests', 'stages', 'assets-src', 'public'].filter((e) => fs.existsSync(path.join(root, e)));
 zipDir(root, path.join(stageDir, 'source.zip'), srcEntries);
 const evSrc = path.join(root, 'evidence', name);
 if (!fs.existsSync(evSrc)) { console.error('missing evidence dir ' + evSrc); process.exit(3); }

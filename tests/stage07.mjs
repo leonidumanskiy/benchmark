@@ -16,7 +16,7 @@ async function waitSettled(page) {
   await page.waitForFunction(() => { const i = __game.settings.info(); const s = i.settings;
     return (s.player !== 'hd' || i.playerSkin === 'hd') && (s.env !== 'hd' || i.envHd) && (s.monster !== 'hd' || i.hd.monster); }, null, { timeout: 90000 });
 }
-const shot = async (page, out, name) => { if (out) await page.screenshot({ path: path.join(out, name) }); };
+const shot = async (page, out, name) => { if (out) await page.screenshot({ path: path.join(out, name), timeout: 180000 }); };
 
 export async function run(page, log, out, { skipPrevious = false } = {}) {
   if (!skipPrevious) await run06(page, log, out);
@@ -29,6 +29,8 @@ export async function run(page, log, out, { skipPrevious = false } = {}) {
   const d0 = await ev(page, () => __game.settings.info());
   check('defaults: classic player/monster/environment, orthographic camera', d0.settings.player === 'classic' && d0.settings.monster === 'classic' && d0.settings.env === 'classic' && d0.camera === 'OrthographicCamera' && d0.playerSkin === 'classic', d0);
   const hashClassic = await ev(page, () => runScripted());
+  const hashClassic2 = await ev(page, () => runScripted());
+  check('control: scripted fight is deterministic (classic twice)', hashClassic.hash === hashClassic2.hash, { a: hashClassic.hash, b: hashClassic2.hash });
 
   // ---------------------------------------------------------------- 2. Esc opens the pause menu (real key), game pauses
   await ev(page, () => { __game.pause(false); __game.reset({ waves: false, player: { x: 0, z: 2 } }); });
@@ -93,22 +95,31 @@ export async function run(page, log, out, { skipPrevious = false } = {}) {
   check('gameplay identical with classic and HD+perspective visuals (sim hash)', hashHd.hash === hashClassic.hash && hashHd.kills === hashClassic.kills, { classic: hashClassic, hd: hashHd });
 
   // ---------------------------------------------------------------- 8. HD actors are animated by the same rig
-  const anim = await ev(page, () => {
-    __game.pause(true); __game.reset({ waves: false, player: { x: 0, z: 2 } });
-    const id = __game.debug.spawn(4, -2, { hp: 1000 });
-    __game.aimAt(4, -2); __game.move(1, 0); __game.fire(true);
-    const states = new Set(), mstates = new Set(); let grip = 0;
-    for (let i = 0; i < 150; i++) { __game.step(1); const a = __game.anim(); states.add(a.player.state); grip = Math.max(grip, a.player.gripError); for (const m of a.monsters) mstates.add(m.state); }
-    __game.move(0, 0); __game.fire(false); __game.step(1);
+  const anim = await ev(page, async () => {
+    const runAnim = () => {
+      __game.pause(true); __game.reset({ waves: false, player: { x: 0, z: 2 } });
+      __game.debug.spawn(4, -2, { hp: 1000 });
+      __game.aimAt(4, -2); __game.move(1, 0); __game.fire(true);
+      const states = new Set(), mstates = new Set(); const grips = [];
+      for (let i = 0; i < 150; i++) { __game.step(1); const a = __game.anim(); states.add(a.player.state); grips.push(a.player.gripError); for (const m of a.monsters) mstates.add(m.state); }
+      __game.move(0, 0); __game.fire(false); __game.step(1);
+      const feet = [];
+      for (let i = 0; i < 20; i++) { __game.move(1, 0); __game.step(3); const f = __game.view.player.rig.j.footL.getWorldPosition(new __game.view.camera.position.constructor()); feet.push(f.x); }
+      __game.move(0, 0); __game.step(1);
+      return { states: [...states], mstates: [...mstates], grips, feet };
+    };
+    const hd = runAnim();
     const skin = __game.view.player.rig.skin, mskin = [...__game.view.monsters.values()].map((v) => v.rig.skin);
-    // HD meshes ride on the animated joints: the HD foot follows the IK-driven joint
-    const feet = [];
-    for (let i = 0; i < 20; i++) { __game.move(1, 0); __game.step(3); const f = __game.view.player.rig.j.footL.getWorldPosition(new __game.view.camera.position.constructor()); feet.push(+f.x.toFixed(3)); }
-    __game.move(0, 0); __game.step(1);
     const hdOnFoot = __game.view.player.rig.j.footL.children.some((c) => c.userData.hd || c.children.some((d) => d.userData.hd));
-    return { states: [...states], mstates: [...mstates], grip, skin, mskin, footSpread: Math.max(...feet) - Math.min(...feet), hdOnFoot };
+    const prev = __game.settings.get();
+    await __game.settings.set({ player: 'classic', monster: 'classic' });
+    const cl = runAnim();
+    await __game.settings.set(prev);
+    const gripDiff = Math.max(...hd.grips.map((g, i) => Math.abs(g - cl.grips[i])));
+    const footDiff = Math.max(...hd.feet.map((f, i) => Math.abs(f - cl.feet[i])));
+    return { states: hd.states, mstates: hd.mstates, skin, mskin, hdOnFoot, gripMedian: hd.grips.slice().sort((a, b) => a - b)[75], gripDiff, footDiff, footSpread: Math.max(...hd.feet) - Math.min(...hd.feet) };
   });
-  check('HD player/monster are driven by the procedural rig (states, hands on gun, IK feet)', anim.skin === 'hd' && anim.mskin.every((s) => s === 'hd') && anim.states.includes('move+shoot') && anim.grip < 0.02 && anim.footSpread > 0.3 && anim.hdOnFoot && anim.mstates.includes('hit'), anim);
+  check('HD player/monster are driven by the same procedural rig (identical IK/grip as classic, states, hands on gun)', anim.skin === 'hd' && anim.mskin.every((s) => s === 'hd') && anim.states.includes('move+shoot') && anim.gripDiff < 1e-6 && anim.footDiff < 1e-6 && anim.gripMedian < 0.02 && anim.footSpread > 0.3 && anim.hdOnFoot && anim.mstates.includes('hit'), anim);
 
   // ---------------------------------------------------------------- 9. hidden monster: 0 pixels with the HD environment
   const hid = await ev(page, () => {
@@ -154,7 +165,8 @@ function runScriptedSrc() {
     __game.pause(true); __game.reset({ seed: 5, waves: true, player: { x: 0, z: 2 } });
     for (let i = 0; i < 60 * 14; i++) {
       const s = __game.sim; const live = s.monsters.filter((m) => m.state !== 'dead' && m.vis.visible).sort((a, b) => a.vis.dist - b.vis.dist);
-      if (live[0]) __game.aimAt(live[0].pos.x, live[0].pos.z);
+      // always an explicit world aim point: a mouse pixel maps to different world points under different projections
+      if (live[0]) __game.aimAt(live[0].pos.x, live[0].pos.z); else __game.aimAt(s.player.pos.x + Math.cos(i / 40) * 5, s.player.pos.z + Math.sin(i / 40) * 5);
       __game.fire(!!live[0] && live[0].vis.dist < 10);
       __game.move(Math.sin(i / 50), Math.cos(i / 70));
       __game.step(1, i % 30 === 0);
